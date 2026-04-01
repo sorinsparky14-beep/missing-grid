@@ -166,7 +166,7 @@ select.race-select option { background:#141414; }
 
 /* ── GAME AREA ── */
 #game-area { display:none; }
-.pool-bar { background:rgba(10,10,10,.96); border-bottom:1px solid rgba(255,255,255,.07); padding:10px 20px; position:sticky; top:56px; z-index:20; backdrop-filter:blur(8px); box-shadow:0 4px 20px rgba(0,0,0,.5); }
+.pool-bar { background:rgba(10,10,10,.96); border-bottom:1px solid rgba(255,255,255,.07); padding:10px 20px; position:sticky; top:72px; z-index:20; backdrop-filter:blur(8px); box-shadow:0 4px 20px rgba(0,0,0,.5); }
 .pool-lbl { font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.18em; margin-bottom:9px; }
 .pool-chips { display:flex; flex-wrap:wrap; gap:6px; min-height:40px; }
 .dchip { display:flex; align-items:stretch; border-radius:1px; cursor:grab; user-select:none; transition:transform .13s,box-shadow .13s,opacity .13s; font-family:'Barlow Condensed',sans-serif; font-weight:700; overflow:hidden; border:1px solid rgba(255,255,255,.08); background:rgba(20,20,20,.9); }
@@ -225,6 +225,10 @@ select.race-select option { background:#141414; }
 .grid-entry.hint-revealed .pos-badge { color:var(--gold)!important; }
 
 /* ── BOTTOM BAR ── */
+.prog-bar-wrap { position:sticky; bottom:56px; z-index:19; display:flex; align-items:center; gap:10px; padding:6px 24px 4px; background:rgba(10,10,10,.92); backdrop-filter:blur(8px); border-top:1px solid rgba(255,255,255,.05); }
+.prog-bar-track { flex:1; height:6px; background:rgba(255,255,255,.08); border-radius:3px; overflow:hidden; }
+.prog-fill { height:100%; width:0%; background:linear-gradient(90deg, var(--red), #ff5533); border-radius:3px; transition:width .35s ease; }
+.prog-label { font-family:'Barlow Condensed',sans-serif; font-size:.78rem; font-weight:700; color:var(--muted2); min-width:34px; text-align:right; letter-spacing:.04em; }
 .bot-bar { display:flex; align-items:center; gap:14px; padding:14px 24px; background:rgba(10,10,10,.96); border-top:1px solid rgba(255,255,255,.07); flex-wrap:wrap; position:sticky; bottom:0; z-index:20; backdrop-filter:blur(8px); box-shadow:0 -4px 24px rgba(0,0,0,.6); justify-content:center; }
 
 .lives-display { display:flex; gap:6px; align-items:center; }
@@ -239,7 +243,7 @@ select.race-select option { background:#141414; }
 .res-emoji { font-size:2.6rem; margin-bottom:10px; line-height:1; }
 .res-title { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.7rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:4px; }
 .res-pct { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:3.2rem; color:var(--gold); line-height:1; margin:10px 0 4px; text-shadow:0 0 30px rgba(245,197,24,.3); }
-.res-time { font-size:.72rem; color:var(--muted2); letter-spacing:.1em; margin-bottom:4px; }
+.res-time { font-size:.78rem; color:var(--muted2); letter-spacing:.08em; margin-bottom:8px; font-family:'Barlow Condensed',sans-serif; }
 .res-sub { color:var(--muted); font-size:.74rem; margin-bottom:24px; line-height:1.5; }
 .res-hint-penalty { font-size:.62rem; color:#7a6200; margin-bottom:14px; font-style:italic; }
 #confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:99; }
@@ -265,6 +269,7 @@ select.race-select option { background:#141414; }
   .res-card { padding:28px 22px; }
   .res-pct { font-size:2.6rem; }
   .pool-bar { top:50px; }
+  .prog-bar-wrap { bottom:52px; }
   .timer-blk { display:none; }
   header { height:50px; }
 }
