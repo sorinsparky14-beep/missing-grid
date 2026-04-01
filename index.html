@@ -158,12 +158,19 @@
     </div>
     <div class="grid-list" id="grid-list"></div>
   </div>
+  <div class="prog-bar-wrap">
+    <div class="prog-bar-track">
+      <div class="prog-fill" id="prog-fill"></div>
+    </div>
+    <div class="prog-label" id="prog-label">0%</div>
+  </div>
   <div class="bot-bar">
     <div class="lives-display" id="lives-display">
       <span class="life" id="life-1">❤️</span>
       <span class="life" id="life-2">❤️</span>
       <span class="life" id="life-3">❤️</span>
     </div>
+    <button class="btn btn-hint" id="btn-hint" onclick="useHint()">💡 Hint <span id="hint-counter">3 left</span></button>
     <button class="btn btn-green" onclick="checkAnswers()">✓ Check</button>
   </div>
 </div>
@@ -175,6 +182,7 @@
   <div class="res-card">
     <div class="res-emoji" id="res-emoji">🏆</div>
     <div class="res-title" id="res-title">Perfect!</div>
+    <div class="res-time"  id="res-time"></div>
     <div class="res-hint-penalty" id="res-hint-penalty" style="display:none"></div>
     <div class="res-actions">
       <!-- Random mode -->
