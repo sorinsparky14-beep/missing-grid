@@ -1,0 +1,629 @@
+/* ═══════════════════════════════════════════
+   Missing Grid – F1 Puzzle Game
+   game.js  —  Core game logic  v3 (FIAPEDIA)
+   ═══════════════════════════════════════════ */
+
+/* ══ GLOBAL STATE ══ */
+const G = {
+  race:     { name:'', year:'', flag:'' },
+  drivers:  [],
+  hidden:   new Set(),
+  answers:  {},
+  state:    {},
+  selChip:  null,
+  dragging: null,
+  mode:     'random',   // 'random' | 'custom'
+  teamColors: {},       // resolved distinct colors per team
+  /* Timer */
+  timerSec: 0,
+  timerRef: null,
+  timerRunning: false,
+  /* Hints */
+  hintsUsed: 0,
+  hintedPos: new Set(),
+  MAX_HINTS: 3,
+  /* Lives */
+  lives: 3,
+  MAX_LIVES: 3,
+};
+
+/* ══ PAGE NAVIGATION ══ */
+
+function showLanding() {
+  stopTimer();
+  document.querySelector('header').classList.remove('visible');
+  document.getElementById('landing-page').style.display  = 'flex';
+  document.getElementById('editor-panel').style.display  = 'none';
+  document.getElementById('game-area').style.display     = 'none';
+  document.getElementById('result-overlay').classList.remove('show');
+  document.getElementById('hdr-timer').style.display     = 'none';
+  document.getElementById('hdr-score').style.display     = 'none';
+  document.getElementById('hdr-logo').style.display      = 'none';
+}
+
+function showCustomEditor() {
+  G.mode = 'custom';
+  document.querySelector('header').classList.remove('visible');
+  document.getElementById('landing-page').style.display  = 'none';
+  document.getElementById('editor-panel').style.display  = 'flex';
+  document.getElementById('game-area').style.display     = 'none';
+  document.getElementById('result-overlay').classList.remove('show');
+  if (!document.getElementById('race-select').options.length) {
+    buildRaceSelector();
+  }
+  // Resetează întotdeauna la deschidere
+  document.getElementById('race-select').value = '';
+  document.getElementById('in-name').value = '';
+  document.getElementById('in-year').value = '';
+  renderDriversTable([]);
+  G.hidden = new Set();
+  renderHiddenChips(0, []);
+}
+
+function showEditor() {
+  showCustomEditor();
+}
+
+/* ══ HOW TO PLAY TOGGLE ══ */
+function toggleHowToPlay() {
+  const sec = document.getElementById('htp-section');
+  const btn = document.querySelector('.btn-htp');
+  if (sec.style.display === 'none') {
+    sec.style.display = 'block';
+    btn.textContent = '✕ CLOSE';
+  } else {
+    sec.style.display = 'none';
+    btn.textContent = '❓ HOW TO PLAY';
+  }
+}
+
+/* ══ RANDOM GAME ══ */
+
+function startRandomGame() {
+  G.mode = 'random';
+
+  // Pick a random race
+  const race = RACES[Math.floor(Math.random() * RACES.length)];
+
+  // Set race info
+  G.race.name = race.name;
+  G.race.year = race.year;
+  G.race.flag = race.flag;
+  G.drivers   = race.drivers.map(d => ({ ...d }));
+
+  // Generate random hidden positions (between 5 and 10 positions)
+  const total      = G.drivers.length;
+  const count      = 5 + Math.floor(Math.random() * 6); // 5-10
+  const allPos     = Array.from({ length: total }, (_, i) => i + 1);
+  const shuffled   = allPos.sort(() => Math.random() - .5);
+  G.hidden         = new Set(shuffled.slice(0, count).sort((a, b) => a - b));
+
+  _launchGame();
+}
+
+/* ══ BUILD / START (Custom) ══ */
+function buildGame() {
+  G.mode = 'custom';
+  readEditorForm();
+  if (!G.drivers.length) { toast('Add drivers first!', 'bad'); return; }
+  if (!G.hidden.size)    { toast('Select hidden positions!', 'bad'); switchTab('hidden'); return; }
+  _launchGame();
+}
+
+function _launchGame() {
+  // Reset state
+  G.answers   = {};
+  G.state     = {};
+  G.selChip   = null;
+  G.dragging  = null;
+  G.hintsUsed = 0;
+  G.hintedPos = new Set();
+  G.lives     = G.MAX_LIVES;
+  G.teamColors = resolveTeamColors(G.drivers);
+  G.hidden.forEach(p => { if (p <= G.drivers.length) G.state[p] = 'empty'; });
+
+  // Header
+  document.querySelector('header').classList.add('visible');
+  document.getElementById('score-num').textContent = '0';
+  document.getElementById('hdr-logo').style.display      = 'flex';
+  document.getElementById('hdr-timer').style.display     = 'none';
+  document.getElementById('hdr-score').style.display     = 'none';
+
+  // Grid labels
+  document.getElementById('gl-label').textContent = G.race.year;
+  document.getElementById('gl-title').textContent = G.race.name;
+  document.getElementById('gl-sub').textContent   = 'Race Result';
+
+  updateLives();
+  buildPool();
+  buildGridList();
+
+  // Show game, hide others
+  document.getElementById('landing-page').style.display  = 'none';
+  document.getElementById('editor-panel').style.display  = 'none';
+  document.getElementById('game-area').style.display     = 'block';
+
+  startTimer();
+}
+
+/* ══ POOL ══ */
+
+/* Paletă de culori distincte pentru echipe fără culoare proprie */
+const DISTINCT_COLORS = [
+  '#E8002D', // roșu Ferrari
+  '#3671C6', // albastru Red Bull
+  '#FF8000', // portocaliu McLaren
+  '#27F4D2', // turcoaz Mercedes
+  '#229971', // verde Aston Martin
+  '#FFD800', // galben Renault
+  '#FF87BC', // roz Alpine
+  '#64C4FF', // albastru deschis Williams
+  '#C92D4B', // roșu închis Alfa Romeo
+  '#A855F7', // violet
+  '#F97316', // portocaliu închis
+  '#14B8A6', // teal
+  '#EAB308', // galben-auriu
+  '#06B6D4', // cyan
+  '#84CC16', // lime
+  '#F43F5E', // roz intens
+  '#8B5CF6', // indigo
+  '#10B981', // emerald
+  '#FB923C', // portocaliu deschis
+  '#60A5FA', // albastru deschis 2
+];
+
+function resolveTeamColors(drivers) {
+  // Găsim echipele care au culoarea gri (#888888) sau negru (#000000)
+  const teamColorMap = {};
+  let distinctIdx = 0;
+
+  // Prima trecere: înregistrăm culorile reale (non-gri, non-negru)
+  drivers.forEach(d => {
+    const c = (d.color || '').toLowerCase();
+    if (c && c !== '#888888' && c !== '#000000') {
+      teamColorMap[d.team] = d.color;
+    }
+  });
+
+  // A doua trecere: echipele fără culoare proprie primesc câte una distinctă
+  drivers.forEach(d => {
+    if (!teamColorMap[d.team]) {
+      // Caută o culoare neutilizată încă
+      while (
+        distinctIdx < DISTINCT_COLORS.length &&
+        Object.values(teamColorMap).includes(DISTINCT_COLORS[distinctIdx])
+      ) { distinctIdx++; }
+      teamColorMap[d.team] = DISTINCT_COLORS[distinctIdx % DISTINCT_COLORS.length];
+      distinctIdx++;
+    }
+  });
+
+  return teamColorMap;
+}
+
+/* Helper: culoarea rezolvată pentru un driver */
+function getColor(d) {
+  return G.teamColors[d.team] || d.color || '#888888';
+}
+
+function buildPool() {
+  const pool = document.getElementById('pool-chips');
+  pool.innerHTML = '';
+
+  [...G.hidden]
+    .filter(p => p <= G.drivers.length)
+    .sort(() => Math.random() - 0.5)
+    .forEach(pos => {
+      const d    = G.drivers[pos - 1];
+      const chip = document.createElement('div');
+      chip.className   = 'dchip';
+      chip.id          = `chip-${pos}`;
+      chip.dataset.pos = pos;
+      chip.draggable   = true;
+      const col = getColor(d);
+      chip.innerHTML   = `
+        <div class="chip-body" style="background:${col}; border-left: 4px solid rgba(0,0,0,0.3);">
+          <div class="chip-abbr" style="color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.7);">${d.abbr}</div>
+          <div class="chip-name" style="color:rgba(255,255,255,0.85);">${d.name}</div>
+        </div>
+      `;
+      chip.addEventListener('dragstart', () => {
+        G.dragging = pos;
+        chip.classList.add('dragging');
+        setTimeout(() => chip.classList.remove('dragging'), 0);
+      });
+      chip.addEventListener('dragend',  () => { G.dragging = null; });
+      chip.addEventListener('click',    () => selectChip(pos));
+      pool.appendChild(chip);
+    });
+}
+
+/* ══ GRID LIST ══ */
+function buildGridList() {
+  const list = document.getElementById('grid-list');
+  list.innerHTML = '';
+  for (let pos = 1; pos <= G.drivers.length; pos++) {
+    const entry = makeEntry(pos);
+    entry.style.animationDelay = `${(pos - 1) * 0.035}s`;
+    list.appendChild(entry);
+  }
+}
+
+function makeEntry(pos) {
+  const d        = G.drivers[pos - 1];
+  const isHidden = G.hidden.has(pos);
+  const entry    = document.createElement('div');
+  entry.id          = `entry-${pos}`;
+  entry.dataset.pos = pos;
+
+  if (!isHidden) {
+    entry.className = 'grid-entry revealed';
+    entry.innerHTML = revealedHTML(d, pos);
+  } else {
+    entry.className = 'grid-entry drop-zone';
+    entry.innerHTML = dropZoneHTML(pos);
+    attachDropEvents(entry, pos);
+    entry.addEventListener('click', () => onEntryClick(pos));
+  }
+  return entry;
+}
+
+/* ── HTML builders ── */
+function revealedHTML(d, pos) {
+  const dnfTag = d.isDNF ? '<span class="dnf-tag">DNF</span>' : '';
+  const col = getColor(d);
+  return `
+    <div class="pos-badge">${pos}</div>
+    <div class="entry-accent" style="background:${col}"></div>
+    <div class="entry-body" style="background:linear-gradient(90deg,rgba(${hexToRgb(col)},.18) 0%,rgba(18,18,18,.85) 55%);">
+      <div class="entry-info">
+        <div class="entry-name">${d.abbr} <span style="font-weight:600;font-size:.82rem;color:rgba(255,255,255,.65)">${d.name}</span></div>
+        <div class="entry-team">${d.team}</div>
+      </div>
+      ${dnfTag}
+    </div>
+  `;
+}
+
+function dropZoneHTML(pos) {
+  return `
+    <div class="pos-badge">${pos}</div>
+    <div class="entry-accent" style="background:rgba(255,255,255,.05)"></div>
+    <div class="entry-body">
+    </div>
+  `;
+}
+
+function filledHTML(d, pos) {
+  const col = getColor(d);
+  return `
+    <div class="pos-badge">${pos}</div>
+    <div class="entry-accent" style="background:${col}"></div>
+    <div class="entry-body" style="background:linear-gradient(90deg,rgba(${hexToRgb(col)},.15) 0%,rgba(18,18,18,.85) 50%);">
+      <div class="entry-info">
+        <div class="entry-name">${d.abbr} <span style="font-weight:600;font-size:.82rem;color:rgba(255,255,255,.65)">${d.name}</span></div>
+        <div class="entry-team">${d.team}</div>
+      </div>
+    </div>
+    <button class="rm-btn" onclick="removeFromEntry(${pos},event)" title="Elimină">✕</button>
+  `;
+}
+
+function correctHTML(d, pos) {
+  const hintTag = G.hintedPos.has(pos) ? '<span class="hint-tag">HINT</span>' : '';
+  const col = getColor(d);
+  return `
+    <div class="pos-badge">${pos}</div>
+    <div class="entry-accent" style="background:${col}"></div>
+    <div class="entry-body" style="background:linear-gradient(90deg,rgba(${hexToRgb(col)},.14) 0%,rgba(0,230,118,.04) 100%);">
+      <div class="entry-info">
+        <div class="entry-name">${d.abbr} <span style="font-weight:600;font-size:.82rem;color:rgba(255,255,255,.65)">${d.name}</span></div>
+        <div class="entry-team">${d.team}</div>
+      </div>
+      ${hintTag}
+      <span class="ok-tick">✓</span>
+    </div>
+  `;
+}
+
+/* ── Drag events ── */
+function attachDropEvents(el, pos) {
+  el.addEventListener('dragover',  e  => { e.preventDefault(); el.classList.add('drag-over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('drag-over'));
+  el.addEventListener('drop',      e  => { e.preventDefault(); el.classList.remove('drag-over'); onDrop(pos); });
+}
+
+/* ══ INTERACTION ══ */
+function selectChip(pos) {
+  if (G.state[pos] === 'correct') return;
+  G.selChip = pos;
+  document.querySelectorAll('.dchip').forEach(c => c.classList.remove('sel-chip'));
+  const c = document.getElementById(`chip-${pos}`);
+  if (c) c.classList.add('sel-chip');
+  toast('Tap a slot in the grid');
+}
+
+function onDrop(targetPos) {
+  if (G.dragging === null) return;
+  if (G.state[targetPos] === 'correct') return;
+  placeDriver(G.dragging, targetPos);
+  G.dragging = null;
+}
+
+function onEntryClick(targetPos) {
+  if (G.state[targetPos] === 'correct') return;
+  if (G.selChip !== null) {
+    placeDriver(G.selChip, targetPos);
+    G.selChip = null;
+    document.querySelectorAll('.dchip').forEach(c => c.classList.remove('sel-chip'));
+  } else if (G.state[targetPos] === 'filled') {
+    removeFromEntry(targetPos);
+  }
+}
+
+function placeDriver(fromPos, targetPos) {
+  if (G.state[targetPos] === 'correct') return;
+  if (G.state[targetPos] === 'filled') {
+    freeChip(G.answers[targetPos]);
+    delete G.answers[targetPos];
+  }
+  G.answers[targetPos] = fromPos;
+  G.state[targetPos]   = 'filled';
+  const chip = document.getElementById(`chip-${fromPos}`);
+  if (chip) chip.classList.add('placed');
+  const entry = document.getElementById(`entry-${targetPos}`);
+  if (entry) {
+    const d = G.drivers[fromPos - 1];
+    entry.className = 'grid-entry filled';
+    entry.innerHTML = filledHTML(d, targetPos);
+    attachDropEvents(entry, targetPos);
+    entry.addEventListener('click', () => onEntryClick(targetPos));
+  }
+  updateProg();
+}
+
+function removeFromEntry(pos, e) {
+  if (e) e.stopPropagation();
+  if (G.state[pos] === 'correct') return;
+  const prev = G.answers[pos];
+  if (prev !== undefined) freeChip(prev);
+  delete G.answers[pos];
+  G.state[pos] = 'empty';
+  const entry = document.getElementById(`entry-${pos}`);
+  if (entry) {
+    entry.className = 'grid-entry drop-zone';
+    entry.innerHTML = dropZoneHTML(pos);
+    attachDropEvents(entry, pos);
+    entry.addEventListener('click', () => onEntryClick(pos));
+  }
+  updateProg();
+}
+
+function freeChip(pos) {
+  const c = document.getElementById(`chip-${pos}`);
+  if (c) c.classList.remove('placed');
+}
+
+/* ══ HINT SYSTEM ══ */
+function useHint() {
+  const valid      = [...G.hidden].filter(p => p <= G.drivers.length);
+  const candidates = valid.filter(p => G.state[p] !== 'correct' && !G.hintedPos.has(p));
+  if (candidates.length === 0) { toast('No more positions to guess!', 'bad'); return; }
+  if (G.hintsUsed >= G.MAX_HINTS) { toast('You used all hints!', 'bad'); return; }
+
+  const pos = candidates.sort((a,b) => a-b)[0];
+  if (G.state[pos] === 'filled') { freeChip(G.answers[pos]); delete G.answers[pos]; }
+
+  G.answers[pos]   = pos;
+  G.state[pos]     = 'correct';
+  G.hintedPos.add(pos);
+  G.hintsUsed++;
+
+  const chip = document.getElementById(`chip-${pos}`);
+  if (chip) chip.classList.add('placed');
+  const entry = document.getElementById(`entry-${pos}`);
+  if (entry) {
+    entry.className = 'grid-entry correct hint-revealed';
+    entry.innerHTML = correctHTML(G.drivers[pos - 1], pos);
+  }
+  updateHintCounter();
+  updateProg();
+  toast(`💡 Hint: P${pos} → ${G.drivers[pos-1].abbr}`, 'hint');
+  const stillOpen = valid.filter(p => G.state[p] !== 'correct').length;
+  if (stillOpen === 0) setTimeout(() => checkAnswers(), 200);
+}
+
+function updateHintCounter() {
+  const el = document.getElementById('hint-counter');
+  if (el) {
+    const left = G.MAX_HINTS - G.hintsUsed;
+    el.textContent = `💡 ${left} hint${left !== 1 ? 's' : ''} left`;
+  }
+  const btn = document.getElementById('btn-hint');
+  if (btn) btn.disabled = (G.hintsUsed >= G.MAX_HINTS);
+}
+
+/* ══ LIVES ══ */
+function updateLives() {
+  for (let i = 1; i <= G.MAX_LIVES; i++) {
+    const el = document.getElementById(`life-${i}`);
+    if (el) el.textContent = i <= G.lives ? '❤️' : '🖤';
+  }
+}
+
+/* ══ CHECK ANSWERS ══ */
+function checkAnswers() {
+  const valid    = [...G.hidden].filter(p => p <= G.drivers.length);
+  const unfilled = valid.filter(p => G.state[p] !== 'correct' && G.state[p] !== 'filled');
+  if (unfilled.length > 0) { toast(`${unfilled.length} position${unfilled.length !== 1 ? 's' : ''} still empty!`, 'bad'); return; }
+
+  let correct = 0;
+  let wrong   = 0;
+  const total = valid.length;
+
+  valid.forEach(pos => {
+    if (G.state[pos] === 'correct') { correct++; return; }
+    const placed = G.answers[pos];
+    if (placed === pos) {
+      G.state[pos] = 'correct';
+      correct++;
+      const entry = document.getElementById(`entry-${pos}`);
+      if (entry) {
+        entry.className = 'grid-entry correct';
+        entry.innerHTML = correctHTML(G.drivers[pos - 1], pos);
+      }
+    } else {
+      wrong++;
+      const entry = document.getElementById(`entry-${pos}`);
+      if (entry) {
+        entry.classList.add('wrong');
+        setTimeout(() => { removeFromEntry(pos); entry.classList.remove('wrong'); }, 650);
+      }
+    }
+  });
+
+  if (wrong > 0) {
+    G.lives = Math.max(0, G.lives - 1);
+    updateLives();
+    if (G.lives === 0) {
+      stopTimer();
+      setTimeout(() => showResult(correct, total), 700);
+      return;
+    }
+    toast(`❌ Wrong! ${G.lives} life${G.lives !== 1 ? 's' : ''} left`, 'bad');
+  }
+
+  const stillOpen = valid.filter(p => G.state[p] !== 'correct').length;
+  if (stillOpen === 0) {
+    stopTimer();
+    setTimeout(() => showResult(correct, total), 480);
+  } else if (wrong === 0) {
+    toast(`✓ ${correct}/${total} correct. Keep going!`, 'good');
+  }
+}
+
+/* ══ RESET ══ */
+function resetGame() {
+  document.getElementById('result-overlay').classList.remove('show');
+  stopTimer();
+  G.answers   = {};
+  G.state     = {};
+  G.selChip   = null;
+  G.dragging  = null;
+  G.hintsUsed = 0;
+  G.hintedPos = new Set();
+  G.lives     = G.MAX_LIVES;
+  G.hidden.forEach(p => { if (p <= G.drivers.length) G.state[p] = 'empty'; });
+  buildPool();
+  buildGridList();
+  updateLives();
+  startTimer();
+}
+
+/* ══ RESULT ══ */
+function showResult(correct, total) {
+  const pct = Math.round(correct / total * 100);
+  let emoji = '😅', title = 'Try Again!';
+  if      (pct === 100) { emoji = '🏆'; title = 'PERFECT!';    }
+  else if (pct >= 80)   { emoji = '🥇'; title = 'Excellent!';  }
+  else if (pct >= 60)   { emoji = '🥈'; title = 'Well done!';  }
+  else if (pct >= 40)   { emoji = '🥉'; title = 'Decent!';     }
+
+  document.getElementById('res-emoji').textContent = emoji;
+  document.getElementById('res-title').textContent = title;
+
+  const penaltyEl = document.getElementById('res-hint-penalty');
+  if (G.hintsUsed > 0) {
+    penaltyEl.textContent   = `💡 You used ${G.hintsUsed} hint${G.hintsUsed !== 1 ? 's' : ''} (-${G.hintsUsed * 5}% potential score)`;
+    penaltyEl.style.display = 'block';
+  } else {
+    penaltyEl.style.display = 'none';
+  }
+
+  // Show correct buttons based on mode
+  document.getElementById('res-random-btns').style.display = G.mode === 'random' ? 'flex' : 'none';
+  document.getElementById('res-custom-btns').style.display = G.mode === 'custom' ? 'flex' : 'none';
+
+  document.getElementById('result-overlay').classList.add('show');
+  if (pct === 100) launchConfetti();
+}
+
+/* ══ CONFETTI ══ */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx    = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#e10600','#f5c518','#00e676','#ff8c00','#64c4ff','#fff'];
+  const pieces = Array.from({length: 120}, () => ({
+    x:  Math.random() * canvas.width,
+    y:  Math.random() * -canvas.height,
+    vx: (Math.random() - .5) * 3,
+    vy: Math.random() * 4 + 2,
+    rot: Math.random() * 360,
+    rv:  (Math.random() - .5) * 6,
+    w:   Math.random() * 10 + 6,
+    h:   Math.random() * 6 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    alpha: 1,
+  }));
+  let raf;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.rot += p.rv;
+      if (p.y > canvas.height * .7) p.alpha -= .015;
+      if (p.alpha > 0) alive = true;
+      ctx.save(); ctx.globalAlpha = Math.max(0, p.alpha);
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color; ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    if (alive) raf = requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  cancelAnimationFrame(raf);
+  draw();
+}
+
+/* ══ TIMER ══ */
+function startTimer() {
+  G.timerSec = 0; G.timerRunning = true;
+  clearInterval(G.timerRef);
+  renderTimer();
+  G.timerRef = setInterval(() => { G.timerSec++; renderTimer(); }, 1000);
+}
+function stopTimer() { clearInterval(G.timerRef); G.timerRunning = false; }
+function renderTimer() {
+  const el = document.getElementById('timer-num');
+  if (!el) return;
+  const m = Math.floor(G.timerSec / 60), s = G.timerSec % 60;
+  el.textContent = `${m}:${String(s).padStart(2,'0')}`;
+  el.className = 'timer-num';
+  if (G.timerSec > 180) el.classList.add('danger');
+  else if (G.timerSec > 90) el.classList.add('warning');
+}
+function formatTime(sec) {
+  const m = Math.floor(sec / 60), s = sec % 60;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+/* ══ UTILITIES ══ */
+function hexToRgb(hex) {
+  const h = (hex || '#888888').replace('#','');
+  return `${parseInt(h.substring(0,2),16)},${parseInt(h.substring(2,4),16)},${parseInt(h.substring(4,6),16)}`;
+}
+function updateProg() {
+  const valid = [...G.hidden].filter(p => p <= G.drivers.length);
+  const done  = valid.filter(p => G.state[p] === 'filled' || G.state[p] === 'correct').length;
+  const pct   = valid.length > 0 ? Math.round(done / valid.length * 100) : 0;
+  document.getElementById('prog-fill').style.width = pct + '%';
+}
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'show' + (type ? ` toast-${type}` : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => { t.className = ''; }, 2400);
+}
