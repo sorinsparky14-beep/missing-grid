@@ -126,8 +126,8 @@ function _launchGame() {
   document.querySelector('header').classList.add('visible');
   document.getElementById('score-num').textContent = '0';
   document.getElementById('hdr-logo').style.display      = 'flex';
-  document.getElementById('hdr-timer').style.display     = 'none';
-  document.getElementById('hdr-score').style.display     = 'none';
+  document.getElementById('hdr-timer').style.display     = 'flex';
+  document.getElementById('hdr-score').style.display     = 'flex';
 
   // Grid labels
   document.getElementById('gl-label').textContent = G.race.year;
@@ -135,6 +135,8 @@ function _launchGame() {
   document.getElementById('gl-sub').textContent   = 'Race Result';
 
   updateLives();
+  updateHintCounter();
+  updateProg();
   buildPool();
   buildGridList();
 
@@ -363,6 +365,21 @@ function onEntryClick(targetPos) {
 
 function placeDriver(fromPos, targetPos) {
   if (G.state[targetPos] === 'correct') return;
+
+  // If this chip is already placed somewhere else, clear that slot first
+  const prevSlot = Object.keys(G.answers).map(Number).find(k => G.answers[k] === fromPos);
+  if (prevSlot !== undefined && prevSlot !== targetPos && G.state[prevSlot] !== 'correct') {
+    delete G.answers[prevSlot];
+    G.state[prevSlot] = 'empty';
+    const oldEntry = document.getElementById(`entry-${prevSlot}`);
+    if (oldEntry) {
+      oldEntry.className = 'grid-entry drop-zone';
+      oldEntry.innerHTML = dropZoneHTML(prevSlot);
+      attachDropEvents(oldEntry, prevSlot);
+      oldEntry.addEventListener('click', () => onEntryClick(prevSlot));
+    }
+  }
+
   if (G.state[targetPos] === 'filled') {
     freeChip(G.answers[targetPos]);
     delete G.answers[targetPos];
@@ -437,7 +454,7 @@ function updateHintCounter() {
   const el = document.getElementById('hint-counter');
   if (el) {
     const left = G.MAX_HINTS - G.hintsUsed;
-    el.textContent = `💡 ${left} hint${left !== 1 ? 's' : ''} left`;
+    el.textContent = `${left} left`;
   }
   const btn = document.getElementById('btn-hint');
   if (btn) btn.disabled = (G.hintsUsed >= G.MAX_HINTS);
@@ -517,6 +534,8 @@ function resetGame() {
   buildPool();
   buildGridList();
   updateLives();
+  updateHintCounter();
+  updateProg();
   startTimer();
 }
 
@@ -531,6 +550,9 @@ function showResult(correct, total) {
 
   document.getElementById('res-emoji').textContent = emoji;
   document.getElementById('res-title').textContent = title;
+
+  const timeEl = document.getElementById('res-time');
+  if (timeEl) timeEl.textContent = `⏱ ${formatTime(G.timerSec)}  •  ${correct}/${total} correct`;
 
   const penaltyEl = document.getElementById('res-hint-penalty');
   if (G.hintsUsed > 0) {
@@ -617,8 +639,15 @@ function hexToRgb(hex) {
 function updateProg() {
   const valid = [...G.hidden].filter(p => p <= G.drivers.length);
   const done  = valid.filter(p => G.state[p] === 'filled' || G.state[p] === 'correct').length;
+  const correct = valid.filter(p => G.state[p] === 'correct').length;
   const pct   = valid.length > 0 ? Math.round(done / valid.length * 100) : 0;
-  document.getElementById('prog-fill').style.width = pct + '%';
+  const scorePct = valid.length > 0 ? Math.round(correct / valid.length * 100) : 0;
+  const fill = document.getElementById('prog-fill');
+  const lbl  = document.getElementById('prog-label');
+  if (fill) fill.style.width = pct + '%';
+  if (lbl)  lbl.textContent  = pct + '%';
+  const scoreEl = document.getElementById('score-num');
+  if (scoreEl) scoreEl.textContent = scorePct;
 }
 function toast(msg, type = '') {
   const t = document.getElementById('toast');
