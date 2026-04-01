@@ -84,7 +84,7 @@ const RACES = [
       { abbr:'PER', name:'Perez',       team:'Red Bull',      color:'#3671C6' },
       { abbr:'HAM', name:'Hamilton',    team:'Mercedes',      color:'#27F4D2' },
       { abbr:'ALO', name:'Alonso',      team:'Aston Martin',  color:'#229971' },
-      { abbr:'LAN', name:'Norris',      team:'McLaren',       color:'#FF8000' },
+      { abbr:'NOR', name:'Norris',      team:'McLaren',       color:'#FF8000' },
       { abbr:'PIA', name:'Piastri',     team:'McLaren',       color:'#FF8000' },
       { abbr:'RUS', name:'Russell',     team:'Mercedes',      color:'#27F4D2' },
       { abbr:'STR', name:'Stroll',      team:'Aston Martin',  color:'#229971' },
