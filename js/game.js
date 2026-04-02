@@ -309,7 +309,7 @@ function filledHTML(d, pos) {
     <div class="entry-accent" style="background:${col}"></div>
     <div class="entry-body" style="background:linear-gradient(90deg,rgba(${hexToRgb(col)},.15) 0%,rgba(18,18,18,.85) 50%);">
       <div class="entry-info">
-        <div class="entry-name">${getFullName(d)}</div>
+        <div class="entry-name">${d.abbr} <span style="font-weight:600;font-size:.82rem;color:rgba(255,255,255,.65)">${getFullName(d)}</span></div>
         <div class="entry-team">${d.team}</div>
       </div>
     </div>
@@ -325,7 +325,7 @@ function correctHTML(d, pos) {
     <div class="entry-accent" style="background:${col}"></div>
     <div class="entry-body" style="background:linear-gradient(90deg,rgba(${hexToRgb(col)},.14) 0%,rgba(0,230,118,.04) 100%);">
       <div class="entry-info">
-        <div class="entry-name">${getFullName(d)}</div>
+        <div class="entry-name">${d.abbr} <span style="font-weight:600;font-size:.82rem;color:rgba(255,255,255,.65)">${getFullName(d)}</span></div>
         <div class="entry-team">${d.team}</div>
       </div>
       ${hintTag}
