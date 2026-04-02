@@ -16,16 +16,13 @@
   <div class="logo-blk" id="hdr-logo" onclick="showLanding()" style="cursor:pointer;">
     <h1><span class="logo-box">MISSING</span>GRID</h1>
   </div>
-  <div class="timer-blk" id="hdr-timer" style="display:none">
-    <div class="timer-num" id="timer-num">0:00</div>
-    <div class="timer-lbl">Time</div>
-  </div>
-  <div class="hdr-right" id="hdr-score" style="display:none">
-    <div class="score-blk">
-      <div class="score-num" id="score-num">0</div>
-      <div class="score-lbl">Score %</div>
+  <div class="hdr-right" id="hdr-timer" style="display:none">
+    <div class="timer-blk-inline">
+      <div class="timer-num" id="timer-num">3:00</div>
+      <div class="timer-lbl">Time</div>
     </div>
   </div>
+  <div id="hdr-score" style="display:none"></div>
 </header>
 
 <!-- ══════════════════════════════════════════
@@ -157,12 +154,6 @@
       <div class="gp-sub"   id="gl-sub">Race Result</div>
     </div>
     <div class="grid-list" id="grid-list"></div>
-  </div>
-  <div class="prog-bar-wrap">
-    <div class="prog-bar-track">
-      <div class="prog-fill" id="prog-fill"></div>
-    </div>
-    <div class="prog-label" id="prog-label">0%</div>
   </div>
   <div class="bot-bar">
     <div class="lives-display" id="lives-display">
