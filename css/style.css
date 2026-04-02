@@ -169,7 +169,7 @@ select.race-select option { background:var(--jet); }
 .entry-body { flex:1; padding:0 13px; display:flex; align-items:center; background:rgba(17,17,25,.88); height:100%; min-width:0; gap:8px; transition:background .13s; }
 .entry-info { display:flex; flex-direction:column; gap:1px; min-width:0; }
 .entry-name { font-family:'Teko',sans-serif; font-weight:700; font-size:1.18rem; text-transform:uppercase; letter-spacing:.07em; color:var(--ivory); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1; }
-.entry-team { font-size:.65rem; color:var(--dim); font-weight:400; font-family:'Teko',sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:.06em; }
+.entry-team { font-size:.65rem; color:var(--silver); font-weight:400; font-family:'Teko',sans-serif; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:.06em; }
 .grid-entry.revealed { cursor:default; }
 .grid-entry.revealed:hover .entry-accent { width:5px; }
 .grid-entry.drop-zone { cursor:pointer; }
