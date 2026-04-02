@@ -124,10 +124,9 @@ function _launchGame() {
 
   // Header
   document.querySelector('header').classList.add('visible');
-  document.getElementById('score-num').textContent = '0';
   document.getElementById('hdr-logo').style.display      = 'flex';
   document.getElementById('hdr-timer').style.display     = 'flex';
-  document.getElementById('hdr-score').style.display     = 'flex';
+  document.getElementById('hdr-score').style.display     = 'none';
 
   // Grid labels
   document.getElementById('gl-label').textContent = G.race.year;
@@ -285,7 +284,7 @@ function revealedHTML(d, pos) {
     <div class="entry-accent" style="background:${col}"></div>
     <div class="entry-body" style="background:linear-gradient(90deg,rgba(${hexToRgb(col)},.18) 0%,rgba(18,18,18,.85) 55%);">
       <div class="entry-info">
-        <div class="entry-name">${d.abbr} <span style="font-weight:600;font-size:.82rem;color:rgba(255,255,255,.65)">${d.name}</span></div>
+        <div class="entry-name">${d.abbr} <span style="font-weight:600;font-size:.82rem;color:rgba(255,255,255,.65)">${getFullName(d)}</span></div>
         <div class="entry-team">${d.team}</div>
       </div>
       ${dnfTag}
@@ -558,7 +557,8 @@ function showResult(correct, total) {
   document.getElementById('res-title').textContent = title;
 
   const timeEl = document.getElementById('res-time');
-  if (timeEl) timeEl.textContent = `⏱ ${formatTime(G.timerSec)}  •  ${correct}/${total} correct`;
+  const timeUsed = MAX_TIMER_SEC - G.timerSec;
+  if (timeEl) timeEl.textContent = `⏱ ${formatTime(timeUsed)}  •  ${correct}/${total} correct`;
 
   const penaltyEl = document.getElementById('res-hint-penalty');
   if (G.hintsUsed > 0) {
@@ -616,21 +616,34 @@ function launchConfetti() {
 }
 
 /* ══ TIMER ══ */
+const MAX_TIMER_SEC = 180; // 3 minutes
+
 function startTimer() {
-  G.timerSec = 0; G.timerRunning = true;
+  G.timerSec = MAX_TIMER_SEC; G.timerRunning = true;
   clearInterval(G.timerRef);
   renderTimer();
-  G.timerRef = setInterval(() => { G.timerSec++; renderTimer(); }, 1000);
+  G.timerRef = setInterval(() => {
+    G.timerSec--;
+    renderTimer();
+    if (G.timerSec <= 0) {
+      stopTimer();
+      // Count what's correct so far and show result
+      const valid = [...G.hidden].filter(p => p <= G.drivers.length);
+      const correct = valid.filter(p => G.state[p] === 'correct').length;
+      setTimeout(() => showResult(correct, valid.length), 300);
+    }
+  }, 1000);
 }
 function stopTimer() { clearInterval(G.timerRef); G.timerRunning = false; }
 function renderTimer() {
   const el = document.getElementById('timer-num');
   if (!el) return;
-  const m = Math.floor(G.timerSec / 60), s = G.timerSec % 60;
+  const sec = Math.max(0, G.timerSec);
+  const m = Math.floor(sec / 60), s = sec % 60;
   el.textContent = `${m}:${String(s).padStart(2,'0')}`;
   el.className = 'timer-num';
-  if (G.timerSec > 180) el.classList.add('danger');
-  else if (G.timerSec > 90) el.classList.add('warning');
+  if (sec <= 30)  el.classList.add('danger');
+  else if (sec <= 60) el.classList.add('warning');
 }
 function formatTime(sec) {
   const m = Math.floor(sec / 60), s = sec % 60;
@@ -643,17 +656,7 @@ function hexToRgb(hex) {
   return `${parseInt(h.substring(0,2),16)},${parseInt(h.substring(2,4),16)},${parseInt(h.substring(4,6),16)}`;
 }
 function updateProg() {
-  const valid = [...G.hidden].filter(p => p <= G.drivers.length);
-  const done  = valid.filter(p => G.state[p] === 'filled' || G.state[p] === 'correct').length;
-  const correct = valid.filter(p => G.state[p] === 'correct').length;
-  const pct   = valid.length > 0 ? Math.round(done / valid.length * 100) : 0;
-  const scorePct = valid.length > 0 ? Math.round(correct / valid.length * 100) : 0;
-  const fill = document.getElementById('prog-fill');
-  const lbl  = document.getElementById('prog-label');
-  if (fill) fill.style.width = pct + '%';
-  if (lbl)  lbl.textContent  = pct + '%';
-  const scoreEl = document.getElementById('score-num');
-  if (scoreEl) scoreEl.textContent = scorePct;
+  // Progress bar removed — function kept as no-op to avoid call-site errors
 }
 function toast(msg, type = '') {
   const t = document.getElementById('toast');
