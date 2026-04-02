@@ -76,12 +76,12 @@ header.visible { display: flex; justify-content: center; border-bottom: 1px soli
 .timer-num { font-family: 'Teko', sans-serif; font-weight: 600; font-size: 1.4rem; color: var(--ivory); font-variant-numeric: tabular-nums; letter-spacing: .05em; transition: color .3s; }
 .timer-num.warning { color: var(--amber); }
 .timer-num.danger { color: var(--red); animation: timerPulse .5s ease infinite alternate; }
-.timer-lbl { font-size: .44rem; color: var(--dim); text-transform: uppercase; letter-spacing: .2em; }
+.timer-lbl { font-size: .5rem; color: var(--silver); text-transform: uppercase; letter-spacing: .2em; }
 .hdr-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
 .score-blk { text-align: right; }
 .score-num { font-family: 'Teko', sans-serif; font-weight: 600; font-size: 1.7rem; color: var(--goldMid); line-height: 1; transition: transform .15s; }
 .score-num.bump { animation: scoreBump .22s ease; }
-.score-lbl { font-size: .44rem; color: var(--dim); text-transform: uppercase; letter-spacing: .2em; }
+.score-lbl { font-size: .5rem; color: var(--silver); text-transform: uppercase; letter-spacing: .2em; }
 
 /* ── BUTTONS ── */
 .btn { font-family: 'Teko', sans-serif; font-weight: 600; font-size: .85rem; letter-spacing: .16em; text-transform: uppercase; border: none; cursor: pointer; padding: 9px 20px; border-radius: 1px; transition: all .15s; }
