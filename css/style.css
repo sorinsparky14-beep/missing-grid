@@ -72,16 +72,12 @@ header.visible { display: flex; justify-content: center; border-bottom: 1px soli
 .rmeta { display: flex; flex-direction: column; gap: 1px; }
 .rmeta span { font-size: .46rem; color: var(--dim); text-transform: uppercase; letter-spacing: .2em; }
 .rmeta strong { font-size: .85rem; font-weight: 500; letter-spacing: .04em; }
-.timer-blk { display: flex; flex-direction: column; align-items: center; padding: 0 16px; border-left: 1px solid rgba(58,58,82,.6); border-right: 1px solid rgba(58,58,82,.6); }
-.timer-num { font-family: 'Teko', sans-serif; font-weight: 600; font-size: 1.4rem; color: var(--ivory); font-variant-numeric: tabular-nums; letter-spacing: .05em; transition: color .3s; }
+.timer-blk-inline { display: flex; flex-direction: column; align-items: flex-end; }
+.timer-num { font-family: 'Teko', sans-serif; font-weight: 600; font-size: 1.6rem; color: var(--ivory); font-variant-numeric: tabular-nums; letter-spacing: .05em; transition: color .3s; line-height: 1; }
 .timer-num.warning { color: var(--amber); }
 .timer-num.danger { color: var(--red); animation: timerPulse .5s ease infinite alternate; }
-.timer-lbl { font-size: .5rem; color: var(--silver); text-transform: uppercase; letter-spacing: .2em; }
+.timer-lbl { font-size: .5rem; color: var(--silver); text-transform: uppercase; letter-spacing: .2em; text-align: right; }
 .hdr-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
-.score-blk { text-align: right; }
-.score-num { font-family: 'Teko', sans-serif; font-weight: 600; font-size: 1.7rem; color: var(--goldMid); line-height: 1; transition: transform .15s; }
-.score-num.bump { animation: scoreBump .22s ease; }
-.score-lbl { font-size: .5rem; color: var(--silver); text-transform: uppercase; letter-spacing: .2em; }
 
 /* ── BUTTONS ── */
 .btn { font-family: 'Teko', sans-serif; font-weight: 600; font-size: .85rem; letter-spacing: .16em; text-transform: uppercase; border: none; cursor: pointer; padding: 9px 20px; border-radius: 1px; transition: all .15s; }
@@ -196,10 +192,6 @@ select.race-select option { background:var(--jet); }
 .grid-entry.hint-revealed .pos-badge { color:var(--goldMid)!important; }
 
 /* ── BOTTOM BAR ── */
-.prog-bar-wrap { position:sticky; bottom:56px; z-index:19; display:flex; align-items:center; gap:10px; padding:6px 24px 4px; background:rgba(5,5,7,.94); backdrop-filter:blur(8px); border-top:1px solid rgba(58,58,82,.25); }
-.prog-bar-track { flex:1; height:5px; background:rgba(58,58,82,.3); border-radius:3px; overflow:hidden; }
-.prog-fill { height:100%; width:0%; background:linear-gradient(90deg, var(--redDeep), var(--red)); border-radius:3px; transition:width .35s ease; }
-.prog-label { font-family:'Teko',sans-serif; font-size:.85rem; font-weight:600; color:var(--chrome); min-width:34px; text-align:right; letter-spacing:.04em; }
 .bot-bar { display:flex; align-items:center; gap:14px; padding:14px 24px; background:rgba(5,5,7,.97); border-top:1px solid rgba(58,58,82,.3); flex-wrap:wrap; position:sticky; bottom:0; z-index:20; backdrop-filter:blur(8px); box-shadow:0 -4px 24px rgba(0,0,0,.7); justify-content:center; }
 .lives-display { display:flex; gap:6px; align-items:center; }
 .life { font-size:1.4rem; line-height:1; transition:transform .2s, filter .2s; }
@@ -259,7 +251,6 @@ select.race-select option { background:var(--jet); }
   header { height: 60px; padding: 0 18px; gap: 14px; }
   .logo-blk h1 { font-size: 1.5rem; }
   .timer-num { font-size: 1.2rem; }
-  .score-num { font-size: 1.4rem; }
 
   /* Pool */
   .pool-bar { top: 60px; padding: 8px 16px; }
@@ -278,7 +269,6 @@ select.race-select option { background:var(--jet); }
   .grid-header .gp-label { font-size: 1rem; letter-spacing: .24em; }
 
   /* Bottom bar */
-  .prog-bar-wrap { bottom: 54px; padding: 5px 16px 3px; }
   .bot-bar { padding: 10px 16px; gap: 10px; }
   .btn { padding: 8px 16px; font-size: .8rem; }
 
@@ -305,9 +295,6 @@ select.race-select option { background:var(--jet); }
   /* Header */
   header { height: 52px; padding: 0 14px; gap: 10px; }
   .logo-blk h1 { font-size: 1.3rem; letter-spacing: .08em; }
-  .timer-blk { display: none; }
-  .score-num { font-size: 1.3rem; }
-  .score-lbl { font-size: .4rem; }
 
   /* Pool */
   .pool-bar { top: 52px; padding: 7px 12px; }
@@ -330,8 +317,6 @@ select.race-select option { background:var(--jet); }
   .grid-header .gp-sub { letter-spacing: .16em; }
 
   /* Bottom bar */
-  .prog-bar-wrap { bottom: 54px; padding: 5px 12px 3px; }
-  .prog-label { font-size: .75rem; }
   .bot-bar { padding: 9px 12px; gap: 8px; }
   .btn { padding: 8px 14px; font-size: .78rem; }
   .lives-display { gap: 4px; }
@@ -368,7 +353,6 @@ select.race-select option { background:var(--jet); }
   /* Header */
   header { height: 48px; gap: 8px; padding: 0 10px; }
   .logo-blk h1 { font-size: 1.15rem; }
-  .score-num { font-size: 1.1rem; }
 
   /* Pool */
   .pool-bar { top: 48px; padding: 6px 10px; }
@@ -385,7 +369,6 @@ select.race-select option { background:var(--jet); }
   .grid-header .gp-title { font-size: 1.35rem; }
 
   /* Bottom bar */
-  .prog-bar-wrap { bottom: 50px; padding: 4px 10px 2px; }
   .bot-bar { padding: 7px 10px; gap: 6px; }
   .btn { padding: 7px 11px; font-size: .72rem; letter-spacing: .1em; }
   .life { font-size: 1rem; }
