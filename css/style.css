@@ -235,8 +235,18 @@ select.race-select option { background:var(--jet); }
 ══════════════════════════════════════════ */
 
 /* ── TABLET MARE: 901–1199px ── */
+/* ══════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   xs  : < 390px   — telefoane mici (SE, Moto G)
+   sm  : 390–600px — telefoane standard / mari (iPhone 14–16, Galaxy S)
+   md  : 601–900px — tablete mici / landscape phone (iPad Mini, Galaxy Tab)
+   lg  : 901–1199px — tablete mari (iPad Pro, Surface)
+   xl  : 1200px+  — desktop (baza)
+══════════════════════════════════════════ */
+
+/* ── TABLETĂ MARE: 901–1199px ── */
 @media (min-width:901px) and (max-width:1199px) {
-  .grid-wrap { padding: 28px 20px 100px; }
+  .grid-wrap { padding: 28px 20px 80px; }
   .grid-list { grid-template-columns: 1fr 1fr; gap: 4px 10px; }
   .grid-entry { height: 56px; }
   .landing-title { font-size: clamp(4.5rem, 10vw, 7rem); }
@@ -245,12 +255,13 @@ select.race-select option { background:var(--jet); }
   .editor-inner { padding: 36px 20px; }
 }
 
-/* ── TABLET MIC + LANDSCAPE PHONE: 601–900px ── */
+/* ── TABLETĂ MICĂ + LANDSCAPE PHONE: 601–900px ── */
 @media (min-width:601px) and (max-width:900px) {
   /* Header */
   header { height: 60px; padding: 0 18px; gap: 14px; }
   .logo-blk h1 { font-size: 1.5rem; }
-  .timer-num { font-size: 1.2rem; }
+  .timer-num { font-size: 1.25rem; }
+  .timer-lbl { font-size: .46rem; }
 
   /* Pool */
   .pool-bar { top: 60px; padding: 8px 16px; }
@@ -258,8 +269,8 @@ select.race-select option { background:var(--jet); }
   .dchip .chip-abbr { font-size: .95rem; }
   .dchip .chip-name { font-size: .6rem; }
 
-  /* Grid — 2 coloane pe tablete */
-  .grid-wrap { padding: 24px 16px 90px; }
+  /* Grid — 2 coloane */
+  .grid-wrap { padding: 24px 16px 80px; }
   .grid-list { grid-template-columns: 1fr 1fr; gap: 4px 10px; }
   .grid-entry { height: 54px; }
   .pos-badge { width: 44px; font-size: 1rem; }
@@ -279,7 +290,6 @@ select.race-select option { background:var(--jet); }
 
   /* Landing */
   .landing-title { font-size: clamp(3.5rem, 9vw, 6rem); }
-  .landing-sub { font-size: 1.1rem; }
   .htp-steps { grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .htp-step { padding: 24px 16px; }
   .btn-play-random { height: 68px; padding: 0 40px 0 28px; }
@@ -295,17 +305,19 @@ select.race-select option { background:var(--jet); }
   /* Header */
   header { height: 52px; padding: 0 14px; gap: 10px; }
   .logo-blk h1 { font-size: 1.3rem; letter-spacing: .08em; }
+  .timer-num { font-size: 1.2rem; }
+  .timer-lbl { font-size: .42rem; }
+  .pool-bar { top: 52px; padding: 7px 12px; }
 
   /* Pool */
-  .pool-bar { top: 52px; padding: 7px 12px; }
   .pool-lbl { font-size: .68rem; margin-bottom: 6px; letter-spacing: .14em; }
   .pool-chips { gap: 5px; }
   .dchip .chip-body { padding: 4px 10px 4px 7px; }
   .dchip .chip-abbr { font-size: .9rem; }
   .dchip .chip-name { font-size: .55rem; }
 
-  /* Grid — 1 coloana pe telefoane */
-  .grid-wrap { padding: 18px 10px 100px; }
+  /* Grid — 1 coloană */
+  .grid-wrap { padding: 18px 10px 80px; }
   .grid-list { grid-template-columns: 1fr; gap: 4px; }
   .grid-entry { height: 52px; }
   .pos-badge { width: 42px; font-size: .95rem; }
@@ -330,7 +342,6 @@ select.race-select option { background:var(--jet); }
 
   /* Landing */
   .landing-title { font-size: 3.4rem; }
-  .landing-sub { font-size: 1rem; letter-spacing: .08em; }
   .landing-cta { gap: 10px; }
   .btn-play-random { clip-path: none; height: 64px; padding: 0 24px; width: 100%; max-width: 340px; justify-content: center; }
   .btn-custom, .btn-htp { height: 52px; padding: 0 20px; font-size: .9rem; flex: 1; min-width: 120px; justify-content: center; }
@@ -353,6 +364,7 @@ select.race-select option { background:var(--jet); }
   /* Header */
   header { height: 48px; gap: 8px; padding: 0 10px; }
   .logo-blk h1 { font-size: 1.15rem; }
+  .timer-num { font-size: 1.05rem; }
 
   /* Pool */
   .pool-bar { top: 48px; padding: 6px 10px; }
@@ -361,7 +373,7 @@ select.race-select option { background:var(--jet); }
   .dchip .chip-name { display: none; }
 
   /* Grid */
-  .grid-wrap { padding: 14px 8px 95px; }
+  .grid-wrap { padding: 14px 8px 75px; }
   .grid-entry { height: 48px; }
   .pos-badge { width: 38px; font-size: .88rem; }
   .entry-name { font-size: .92rem; letter-spacing: .04em; }
