@@ -91,11 +91,21 @@ function startRandomGame() {
   G.race.flag = race.flag;
   G.drivers   = race.drivers.map(d => ({ ...d }));
 
-  // Hidden (de ghicit): 10–15
-  // Revealed (vizibili): minim 3 garantat
-  const total     = G.drivers.length;
-  const hideMax   = Math.min(15, total - 3); // garantam cel putin 3 revealed
-  const hideMin   = Math.min(10, hideMax);
+  // Hidden: 10–13 pentru toate cursele
+  // Revealed minim garantat variaza in functie de marimea grilei:
+  //   16 piloti  → revealed min 3  → hidden max 13
+  //   18–19      → revealed min 5  → hidden max total-5
+  //   20         → revealed min 7  → hidden max 13
+  //   21+        → revealed min 8  → hidden max total-8
+  const total = G.drivers.length;
+  let revealMin;
+  if      (total <= 16) revealMin = 3;
+  else if (total <= 19) revealMin = 5;
+  else if (total <= 20) revealMin = 7;
+  else                  revealMin = 8;
+
+  const hideMin   = 10;
+  const hideMax   = Math.min(13, total - revealMin);
   const hideCount = hideMin + Math.floor(Math.random() * (hideMax - hideMin + 1));
 
   const allPos   = Array.from({ length: total }, (_, i) => i + 1);
