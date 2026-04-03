@@ -450,37 +450,6 @@ const RACES = [
     ]
   },
 
-  /* ─────────────────────────────────────────
-     ABU DHABI 2021 (Sprint Weekend)
-  ───────────────────────────────────────── */
-  {
-    id:     'abu_dhabi_2021b',
-    name:   'Abu Dhabi Grand Prix',
-    year:   2021,
-    flag:   '🇦🇪',
-    hidden: [1, 3, 5, 7, 10, 13, 15],
-    drivers: [
-      { abbr:'VER', name:'Verstappen', fullName:'Max Verstappen',     team:'Red Bull Racing Honda', color:'#3671C6' },
-      { abbr:'HAM', name:'Hamilton', fullName:'Lewis Hamilton',       team:'Mercedes',              color:'#27F4D2' },
-      { abbr:'SAI', name:'Sainz', fullName:'Carlos Sainz',          team:'Ferrari',               color:'#E8002D' },
-      { abbr:'TSU', name:'Tsunoda', fullName:'Yuki Tsunoda',        team:'AlphaTauri Honda',      color:'#5E8FAA' },
-      { abbr:'GAS', name:'Gasly', fullName:'Pierre Gasly',          team:'AlphaTauri Honda',      color:'#5E8FAA' },
-      { abbr:'BOT', name:'Bottas', fullName:'Valtteri Bottas',         team:'Mercedes',              color:'#27F4D2' },
-      { abbr:'NOR', name:'Norris', fullName:'Lando Norris',         team:'McLaren Mercedes',      color:'#FF8000' },
-      { abbr:'ALO', name:'Alonso', fullName:'Fernando Alonso',         team:'Alpine Renault',        color:'#FF87BC' },
-      { abbr:'OCO', name:'Ocon', fullName:'Esteban Ocon',           team:'Alpine Renault',        color:'#FF87BC' },
-      { abbr:'LEC', name:'Leclerc', fullName:'Charles Leclerc',        team:'Ferrari',               color:'#E8002D' },
-      { abbr:'VET', name:'Vettel', fullName:'Sebastian Vettel',         team:'Aston Martin Mercedes', color:'#229971' },
-      { abbr:'RIC', name:'Ricciardo', fullName:'Daniel Ricciardo',      team:'McLaren Mercedes',      color:'#FF8000' },
-      { abbr:'STR', name:'Stroll', fullName:'Lance Stroll',         team:'Aston Martin Mercedes', color:'#229971' },
-      { abbr:'MSC', name:'M.Schumacher', fullName:'Michael Schumacher',   team:'Haas Ferrari',          color:'#B6BABD' },
-      { abbr:'PER', name:'Perez', fullName:'Sergio Perez',          team:'Red Bull Racing Honda', color:'#3671C6', isDNF: true },
-      { abbr:'LAT', name:'Latifi', fullName:'Nicholas Latifi',         team:'Williams Mercedes',     color:'#64C4FF', isDNF: true },
-      { abbr:'GIO', name:'Giovinazzi', fullName:'Antonio Giovinazzi',     team:'Alfa Romeo Racing',     color:'#C92D4B', isDNF: true },
-      { abbr:'RUS', name:'Russell', fullName:'George Russell',        team:'Williams Mercedes',     color:'#64C4FF', isDNF: true },
-      { abbr:'RAI', name:'Räikkönen', fullName:'Kimi Räikkönen',      team:'Alfa Romeo Racing',     color:'#C92D4B', isDNF: true },
-    ]
-  },
 
   /* ─────────────────────────────────────────
      MONACO 1984
