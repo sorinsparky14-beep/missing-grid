@@ -91,12 +91,25 @@ function startRandomGame() {
   G.race.flag = race.flag;
   G.drivers   = race.drivers.map(d => ({ ...d }));
 
-  // Generate random hidden positions (between 5 and 10 positions)
-  const total      = G.drivers.length;
-  const count      = 5 + Math.floor(Math.random() * 6); // 5-10
-  const allPos     = Array.from({ length: total }, (_, i) => i + 1);
-  const shuffled   = allPos.sort(() => Math.random() - .5);
-  G.hidden         = new Set(shuffled.slice(0, count).sort((a, b) => a - b));
+  // Revealed count based on grid size:
+  //   16–21 drivers → reveal 5–10
+  //   22–26 drivers → reveal 10–15
+  const total = G.drivers.length;
+  let revealMin, revealMax;
+  if (total <= 21) {
+    revealMin = 5; revealMax = 10;
+  } else {
+    revealMin = 10; revealMax = 15;
+  }
+  // Clamp to available drivers
+  revealMax = Math.min(revealMax, total - 1); // always at least 1 hidden
+  revealMin = Math.min(revealMin, revealMax);
+
+  const reveal   = revealMin + Math.floor(Math.random() * (revealMax - revealMin + 1));
+  const allPos   = Array.from({ length: total }, (_, i) => i + 1);
+  const shuffled = [...allPos].sort(() => Math.random() - .5);
+  const revealedSet = new Set(shuffled.slice(0, reveal));
+  G.hidden = new Set(allPos.filter(p => !revealedSet.has(p)));
 
   _launchGame();
 }
