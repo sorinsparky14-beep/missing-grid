@@ -40,6 +40,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'qatar_2023',
+    difficulty: 'easy',
     name:   'Qatar Grand Prix',
     year:   2023,
     flag:   '🇶🇦',
@@ -73,6 +74,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'bahrain_2024',
+    difficulty: 'easy',
     name:   'Bahrain Grand Prix',
     year:   2024,
     flag:   '🇧🇭',
@@ -106,6 +108,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'abu_dhabi_2021',
+    difficulty: 'easy',
     name:   'Abu Dhabi Grand Prix',
     year:   2021,
     flag:   '🇦🇪',
@@ -138,6 +141,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'sao_paulo_2021',
+    difficulty: 'easy',
     name:   'São Paulo Grand Prix',
     year:   2021,
     flag:   '🇧🇷',
@@ -171,6 +175,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monza_2021',
+    difficulty: 'easy',
     name:   'Italian Grand Prix',
     year:   2021,
     flag:   '🇮🇹',
@@ -204,6 +209,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'hungary_2021',
+    difficulty: 'easy',
     name:   'Hungarian Grand Prix',
     year:   2021,
     flag:   '🇭🇺',
@@ -236,6 +242,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monza_2020',
+    difficulty: 'easy',
     name:   'Italian Grand Prix',
     year:   2020,
     flag:   '🇮🇹',
@@ -269,6 +276,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'sakhir_2020',
+    difficulty: 'easy',
     name:   'Sakhir Grand Prix',
     year:   2020,
     flag:   '🇧🇭',
@@ -308,6 +316,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'france_1979',
+    difficulty: 'hard',
     name:   'French Grand Prix',
     year:   1979,
     flag:   '🇫🇷',
@@ -345,6 +354,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'japan_1976',
+    difficulty: 'hard',
     name:   'Japanese Grand Prix',
     year:   1976,
     flag:   '🇯🇵',
@@ -383,6 +393,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'australia_1994',
+    difficulty: 'hard',
     name:   'Australian Grand Prix',
     year:   1994,
     flag:   '🇦🇺',
@@ -422,6 +433,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'brazil_2008',
+    difficulty: 'easy',
     name:   'Brazilian Grand Prix',
     year:   2008,
     flag:   '🇧🇷',
@@ -456,6 +468,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monaco_1984',
+    difficulty: 'medium',
     name:   'Monaco Grand Prix',
     year:   1984,
     flag:   '🇲🇨',
@@ -485,6 +498,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'belgium_1998',
+    difficulty: 'medium',
     name:   'Belgian Grand Prix',
     year:   1998,
     flag:   '🇧🇪',
@@ -516,6 +530,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'belgium_2000',
+    difficulty: 'medium',
     name:   'Belgian Grand Prix',
     year:   2000,
     flag:   '🇧🇪',
@@ -551,6 +566,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monza_1967',
+    difficulty: 'hard',
     name:   'Italian Grand Prix',
     year:   1967,
     flag:   '🇮🇹',
@@ -582,6 +598,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'europe_1993',
+    difficulty: 'medium',
     name:   'European Grand Prix',
     year:   1993,
     flag:   '🇬🇧',
@@ -618,6 +635,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monza_1970',
+    difficulty: 'hard',
     name:   'Italian Grand Prix',
     year:   1970,
     flag:   '🇮🇹',
@@ -651,6 +669,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'bahrain_2005',
+    difficulty: 'medium',
     name:   'Bahrain Grand Prix',
     year:   2005,
     flag:   '🇧🇭',
@@ -684,6 +703,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'australia_1986',
+    difficulty: 'hard',
     name:   'Australian Grand Prix',
     year:   1986,
     flag:   '🇦🇺',
@@ -723,6 +743,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'brazil_2012',
+    difficulty: 'medium',
     name:   'Brazilian Grand Prix',
     year:   2012,
     flag:   '🇧🇷',
@@ -760,6 +781,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monaco_1996',
+    difficulty: 'medium',
     name:   'Monaco Grand Prix',
     year:   1996,
     flag:   '🇲🇨',
@@ -794,6 +816,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'brazil_2003',
+    difficulty: 'medium',
     name:   'Brazilian Grand Prix',
     year:   2003,
     flag:   '🇧🇷',
@@ -827,6 +850,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monaco_1982',
+    difficulty: 'hard',
     name:   'Monaco Grand Prix',
     year:   1982,
     flag:   '🇲🇨',
@@ -860,6 +884,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'canada_2011',
+    difficulty: 'medium',
     name:   'Canadian Grand Prix',
     year:   2011,
     flag:   '🇨🇦',
@@ -897,6 +922,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'germany_2019',
+    difficulty: 'easy',
     name:   'German Grand Prix',
     year:   2019,
     flag:   '🇩🇪',
@@ -930,6 +956,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'san_marino_1989',
+    difficulty: 'hard',
     name:   'San Marino Grand Prix',
     year:   1989,
     flag:   '🇮🇹',
@@ -967,6 +994,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'germany_2007',
+    difficulty: 'medium',
     name:   'German Grand Prix',
     year:   2007,
     flag:   '🇩🇪',
@@ -1002,6 +1030,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'britain_1950',
+    difficulty: 'hard',
     name:   'British Grand Prix',
     year:   1950,
     flag:   '🇬🇧',
@@ -1036,6 +1065,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monaco_2016',
+    difficulty: 'easy',
     name:   'Monaco Grand Prix',
     year:   2016,
     flag:   '🇲🇨',
@@ -1071,6 +1101,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'japan_1977',
+    difficulty: 'hard',
     name:   'Japanese Grand Prix',
     year:   1977,
     flag:   '🇯🇵',
@@ -1107,6 +1138,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'germany_2018',
+    difficulty: 'easy',
     name:   'German Grand Prix',
     year:   2018,
     flag:   '🇩🇪',
@@ -1140,6 +1172,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'germany_1999',
+    difficulty: 'medium',
     name:   'European Grand Prix',
     year:   1999,
     flag:   '🇩🇪',
@@ -1175,6 +1208,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monaco_2004',
+    difficulty: 'medium',
     name:   'Monaco Grand Prix',
     year:   2004,
     flag:   '🇲🇨',
@@ -1208,6 +1242,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monza_1953',
+    difficulty: 'hard',
     name:   'Italian Grand Prix',
     year:   1953,
     flag:   '🇮🇹',
@@ -1241,6 +1276,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'abu_dhabi_2010',
+    difficulty: 'medium',
     name:   'Abu Dhabi Grand Prix',
     year:   2010,
     flag:   '🇦🇪',
@@ -1278,6 +1314,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monaco_1992',
+    difficulty: 'hard',
     name:   'Monaco Grand Prix',
     year:   1992,
     flag:   '🇲🇨',
@@ -1316,6 +1353,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'bahrain_2020',
+    difficulty: 'easy',
     name:   'Bahrain Grand Prix',
     year:   2020,
     flag:   '🇧🇭',
@@ -1349,6 +1387,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'europe_1997',
+    difficulty: 'medium',
     name:   'European Grand Prix',
     year:   1997,
     flag:   '🇪🇸',
@@ -1384,6 +1423,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'britain_1985',
+    difficulty: 'medium',
     name:   'European Grand Prix',
     year:   1985,
     flag:   '🇬🇧',
@@ -1423,6 +1463,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monza_1971',
+    difficulty: 'hard',
     name:   'Italian Grand Prix',
     year:   1971,
     flag:   '🇮🇹',
@@ -1458,6 +1499,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'brazil_2016',
+    difficulty: 'easy',
     name:   'Brazilian Grand Prix',
     year:   2016,
     flag:   '🇧🇷',
@@ -1493,6 +1535,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'hungary_2009',
+    difficulty: 'medium',
     name:   'Hungarian Grand Prix',
     year:   2009,
     flag:   '🇭🇺',
@@ -1525,6 +1568,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'germany_1961',
+    difficulty: 'hard',
     name:   'German Grand Prix',
     year:   1961,
     flag:   '🇩🇪',
@@ -1564,6 +1608,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monaco_1981',
+    difficulty: 'hard',
     name:   'Monaco Grand Prix',
     year:   1981,
     flag:   '🇲🇨',
@@ -1597,6 +1642,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'canada_2014',
+    difficulty: 'easy',
     name:   'Canadian Grand Prix',
     year:   2014,
     flag:   '🇨🇦',
@@ -1632,6 +1678,7 @@ const RACES = [
   ───────────────────────────────────────── */
   {
     id:     'monza_1956',
+    difficulty: 'hard',
     name:   'Italian Grand Prix',
     year:   1956,
     flag:   '🇮🇹',
