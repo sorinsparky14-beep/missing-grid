@@ -35,37 +35,13 @@
 
   <!-- CTA Buttons -->
   <div class="landing-cta">
-    <div class="difficulty-btns">
-      <div class="diff-label">Choose difficulty</div>
-      <button class="btn-diff btn-diff-easy"   onclick="startRandomGame('easy')">
-        <span class="diff-icon">🟢</span>
-        <span class="diff-text">
-          <span class="diff-main">EASY</span>
-          <span class="diff-sub">Modern era drivers</span>
-        </span>
-      </button>
-      <button class="btn-diff btn-diff-medium" onclick="startRandomGame('medium')">
-        <span class="diff-icon">🟡</span>
-        <span class="diff-text">
-          <span class="diff-main">MEDIUM</span>
-          <span class="diff-sub">Mixed generations</span>
-        </span>
-      </button>
-      <button class="btn-diff btn-diff-hard"   onclick="startRandomGame('hard')">
-        <span class="diff-icon">🔴</span>
-        <span class="diff-text">
-          <span class="diff-main">HARD</span>
-          <span class="diff-sub">Classic era drivers</span>
-        </span>
-      </button>
-      <button class="btn-diff btn-diff-random" onclick="startRandomGame()">
-        <span class="diff-icon">🎲</span>
-        <span class="diff-text">
-          <span class="diff-main">RANDOM</span>
-          <span class="diff-sub">Any race, any era</span>
-        </span>
-      </button>
-    </div>
+    <button class="btn-play-random" onclick="startRandomGame()">
+      <span class="bpr-icon">▶</span>
+      <span class="bpr-text">
+        <span class="bpr-main">PLAY</span>
+        <span class="bpr-sub">Random Race</span>
+      </span>
+    </button>
     <button class="btn-custom" onclick="showCustomEditor()">
       <span>⚙</span> CUSTOM
     </button>
