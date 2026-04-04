@@ -389,6 +389,7 @@ function selectChip(pos) {
 
 function onDrop(targetPos) {
   if (G.dragging === null) return;
+  if (!G.hidden.has(targetPos)) return;          // poziție fixă — nu se poate modifica
   if (G.state[targetPos] === 'correct') return;
   if (G.state[targetPos] === 'wrong')   return;
   placeDriver(G.dragging, targetPos);
@@ -396,8 +397,9 @@ function onDrop(targetPos) {
 }
 
 function onEntryClick(targetPos) {
+  if (!G.hidden.has(targetPos)) return;          // poziție fixă — nu se poate modifica
   if (G.state[targetPos] === 'correct') return;
-  if (G.state[targetPos] === 'wrong')   return; // animatie in curs, ignora click
+  if (G.state[targetPos] === 'wrong')   return;
   if (G.selChip !== null) {
     placeDriver(G.selChip, targetPos);
     G.selChip = null;
@@ -408,8 +410,9 @@ function onEntryClick(targetPos) {
 }
 
 function placeDriver(fromPos, targetPos) {
+  if (!G.hidden.has(targetPos)) return;          // poziție fixă — protecție suplimentară
   if (G.state[targetPos] === 'correct') return;
-  if (G.state[targetPos] === 'wrong')   return; // animatie in curs
+  if (G.state[targetPos] === 'wrong')   return;
 
   // If this chip is already placed somewhere else, clear that slot first
   const prevSlot = Object.keys(G.answers).map(Number).find(k => G.answers[k] === fromPos);
@@ -484,9 +487,8 @@ function useHint() {
 
 function applyHintToPos(pos) {
   if (!G.hintMode) return;
+  if (!G.hidden.has(pos)) return;               // nu e poziție ascunsă
   if (G.state[pos] === 'correct') return;
-  const valid = [...G.hidden].filter(p => p <= G.drivers.length);
-  if (!valid.includes(pos)) return;
 
   // Dezactivează modul hint
   G.hintMode = false;
