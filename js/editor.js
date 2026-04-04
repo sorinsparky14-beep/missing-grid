@@ -27,7 +27,7 @@ document.querySelectorAll('.etab').forEach(tab => {
 function buildRaceSelector() {
   const sel = document.getElementById('race-select');
   if (!sel || sel.options.length > 1) return;
-  sel.innerHTML = '<option value="">— Alege o cursă —</option>';
+  sel.innerHTML = '<option value="">— Choose a race —</option>';
   RACES.forEach(r => {
     const opt = document.createElement('option');
     opt.value = r.id;
