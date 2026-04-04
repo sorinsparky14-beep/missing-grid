@@ -72,11 +72,6 @@ header.visible { display: flex; justify-content: center; border-bottom: 1px soli
 .rmeta { display: flex; flex-direction: column; gap: 1px; }
 .rmeta span { font-size: .46rem; color: var(--dim); text-transform: uppercase; letter-spacing: .2em; }
 .rmeta strong { font-size: .85rem; font-weight: 500; letter-spacing: .04em; }
-.timer-blk-inline { display: flex; flex-direction: column; align-items: flex-end; }
-.timer-num { font-family: 'Teko', sans-serif; font-weight: 600; font-size: 1.6rem; color: var(--ivory); font-variant-numeric: tabular-nums; letter-spacing: .05em; transition: color .3s; line-height: 1; }
-.timer-num.warning { color: var(--amber); }
-.timer-num.danger { color: var(--red); animation: timerPulse .5s ease infinite alternate; }
-.timer-lbl { font-size: .5rem; color: var(--silver); text-transform: uppercase; letter-spacing: .2em; text-align: right; }
 .hdr-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
 
 /* ── BUTTONS ── */
@@ -221,7 +216,6 @@ select.race-select option { background:var(--jet); }
 @keyframes slideIn    { from{opacity:0;transform:translateX(-18px)} to{opacity:1;transform:translateX(0)} }
 @keyframes popIn      { from{transform:scale(.78);opacity:0} to{transform:scale(1);opacity:1} }
 @keyframes tickPop    { from{transform:scale(0) rotate(-20deg);opacity:0} to{transform:scale(1) rotate(0);opacity:1} }
-@keyframes timerPulse { from{opacity:1} to{opacity:.5} }
 @keyframes scoreBump  { 0%{transform:scale(1)} 50%{transform:scale(1.25)} 100%{transform:scale(1)} }
 
 /* ── MOBILE ── */
@@ -260,8 +254,6 @@ select.race-select option { background:var(--jet); }
   /* Header */
   header { height: 60px; padding: 0 18px; gap: 14px; }
   .logo-blk h1 { font-size: 1.5rem; }
-  .timer-num { font-size: 1.25rem; }
-  .timer-lbl { font-size: .46rem; }
 
   /* Pool */
   .pool-bar { top: 60px; padding: 8px 16px; }
@@ -305,8 +297,6 @@ select.race-select option { background:var(--jet); }
   /* Header */
   header { height: 52px; padding: 0 14px; gap: 10px; }
   .logo-blk h1 { font-size: 1.3rem; letter-spacing: .08em; }
-  .timer-num { font-size: 1.2rem; }
-  .timer-lbl { font-size: .42rem; }
   .pool-bar { top: 52px; padding: 7px 12px; }
 
   /* Pool */
@@ -364,7 +354,6 @@ select.race-select option { background:var(--jet); }
   /* Header */
   header { height: 48px; gap: 8px; padding: 0 10px; }
   .logo-blk h1 { font-size: 1.15rem; }
-  .timer-num { font-size: 1.05rem; }
 
   /* Pool */
   .pool-bar { top: 48px; padding: 6px 10px; }
