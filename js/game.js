@@ -79,17 +79,21 @@ function toggleHowToPlay() {
 
 /* ══ RANDOM GAME ══ */
 
-function startRandomGame() {
+function startRandomGame(forceDifficulty) {
   G.mode = 'random';
 
-  // Pick a random race
-  const race = RACES[Math.floor(Math.random() * RACES.length)];
+  // Filter by difficulty if requested, otherwise pick from all
+  const pool = forceDifficulty
+    ? RACES.filter(r => r.difficulty === forceDifficulty)
+    : RACES;
+  const race = pool[Math.floor(Math.random() * pool.length)];
 
   // Set race info
-  G.race.name = race.name;
-  G.race.year = race.year;
-  G.race.flag = race.flag;
-  G.drivers   = race.drivers.map(d => ({ ...d }));
+  G.race.name       = race.name;
+  G.race.year       = race.year;
+  G.race.flag       = race.flag;
+  G.race.difficulty = race.difficulty || 'medium';
+  G.drivers         = race.drivers.map(d => ({ ...d }));
 
   // Hidden: 10–13 pentru toate cursele
   // Revealed minim garantat variaza in functie de marimea grilei:
@@ -146,6 +150,17 @@ function _launchGame() {
   document.getElementById('gl-label').textContent = G.race.year;
   document.getElementById('gl-title').textContent = G.race.name;
   document.getElementById('gl-sub').textContent   = 'Race Result';
+
+  // Difficulty badge
+  const diffBadge = document.getElementById('gl-difficulty');
+  if (diffBadge && G.mode === 'random') {
+    const labels = { easy: '🟢 Easy', medium: '🟡 Medium', hard: '🔴 Hard' };
+    diffBadge.textContent = labels[G.race.difficulty] || '';
+    diffBadge.className   = `diff-badge diff-${G.race.difficulty}`;
+    diffBadge.style.display = 'inline-block';
+  } else if (diffBadge) {
+    diffBadge.style.display = 'none';
+  }
 
   updateLives();
   updateHintCounter();
