@@ -287,7 +287,7 @@ function makeEntry(pos) {
 
 /* Full name: uses fullName field if set, otherwise abbr + surname */
 function getFullName(d) {
-  return d.fullName || (d.abbr + ' ' + d.name);
+  return d.fullName || d.name;
 }
 
 function revealedHTML(d, pos) {
@@ -367,12 +367,14 @@ function selectChip(pos) {
 function onDrop(targetPos) {
   if (G.dragging === null) return;
   if (G.state[targetPos] === 'correct') return;
+  if (G.state[targetPos] === 'wrong')   return;
   placeDriver(G.dragging, targetPos);
   G.dragging = null;
 }
 
 function onEntryClick(targetPos) {
   if (G.state[targetPos] === 'correct') return;
+  if (G.state[targetPos] === 'wrong')   return; // animatie in curs, ignora click
   if (G.selChip !== null) {
     placeDriver(G.selChip, targetPos);
     G.selChip = null;
@@ -384,6 +386,7 @@ function onEntryClick(targetPos) {
 
 function placeDriver(fromPos, targetPos) {
   if (G.state[targetPos] === 'correct') return;
+  if (G.state[targetPos] === 'wrong')   return; // animatie in curs
 
   // If this chip is already placed somewhere else, clear that slot first
   const prevSlot = Object.keys(G.answers).map(Number).find(k => G.answers[k] === fromPos);
@@ -510,10 +513,13 @@ function checkAnswers() {
       }
     } else {
       wrong++;
+      G.state[pos] = 'wrong'; // block interaction during shake animation
       const entry = document.getElementById(`entry-${pos}`);
       if (entry) {
         entry.classList.add('wrong');
-        setTimeout(() => { removeFromEntry(pos); entry.classList.remove('wrong'); }, 650);
+        setTimeout(() => {
+          removeFromEntry(pos);
+        }, 650);
       }
     }
   });
@@ -571,8 +577,7 @@ function showResult(correct, total) {
   document.getElementById('res-title').textContent = title;
 
   const timeEl = document.getElementById('res-time');
-  const timeUsed = MAX_TIMER_SEC - G.timerSec;
-  if (timeEl) timeEl.textContent = `⏱ ${formatTime(timeUsed)}  •  ${correct}/${total} correct`;
+  if (timeEl) timeEl.textContent = `${correct}/${total} correct`;
 
   const penaltyEl = document.getElementById('res-hint-penalty');
   if (G.hintsUsed > 0) {
@@ -629,36 +634,11 @@ function launchConfetti() {
   draw();
 }
 
-/* ══ TIMER ══ */
-const MAX_TIMER_SEC = 180; // 3 minutes
-
-function startTimer() {
-  G.timerSec = MAX_TIMER_SEC; G.timerRunning = true;
-  clearInterval(G.timerRef);
-  renderTimer();
-  G.timerRef = setInterval(() => {
-    G.timerSec--;
-    renderTimer();
-    if (G.timerSec <= 0) {
-      stopTimer();
-      // Count what's correct so far and show result
-      const valid = [...G.hidden].filter(p => p <= G.drivers.length);
-      const correct = valid.filter(p => G.state[p] === 'correct').length;
-      setTimeout(() => showResult(correct, valid.length), 300);
-    }
-  }, 1000);
-}
-function stopTimer() { clearInterval(G.timerRef); G.timerRunning = false; }
-function renderTimer() {
-  const el = document.getElementById('timer-num');
-  if (!el) return;
-  const sec = Math.max(0, G.timerSec);
-  const m = Math.floor(sec / 60), s = sec % 60;
-  el.textContent = `${m}:${String(s).padStart(2,'0')}`;
-  el.className = 'timer-num';
-  if (sec <= 30)  el.classList.add('danger');
-  else if (sec <= 60) el.classList.add('warning');
-}
+/* ══ TIMER (disabled) ══ */
+const MAX_TIMER_SEC = 0;
+function startTimer() {}
+function stopTimer()  { clearInterval(G.timerRef); G.timerRunning = false; }
+function renderTimer() {}
 function formatTime(sec) {
   const m = Math.floor(sec / 60), s = sec % 60;
   return `${m}:${String(s).padStart(2,'0')}`;
