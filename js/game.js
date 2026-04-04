@@ -21,7 +21,8 @@ const G = {
   /* Hints */
   hintsUsed: 0,
   hintedPos: new Set(),
-  MAX_HINTS: 3,
+  MAX_HINTS: 1,
+  hintMode: false,   // true = jucătorul alege poziția pentru hint
   /* Lives */
   lives: 3,
   MAX_LIVES: 3,
@@ -95,22 +96,11 @@ function startRandomGame(forceDifficulty) {
   G.race.difficulty = race.difficulty || 'medium';
   G.drivers         = race.drivers.map(d => ({ ...d }));
 
-  // Hidden: 10–13 pentru toate cursele
-  // Revealed minim garantat variaza in functie de marimea grilei:
-  //   16 piloti  → revealed min 3  → hidden max 13
-  //   18–19      → revealed min 5  → hidden max total-5
-  //   20         → revealed min 7  → hidden max 13
-  //   21+        → revealed min 8  → hidden max total-8
+  // Hidden: bazat pe dificultate
+  // easy=10, medium=8, hard=6 (fixe, nu random)
   const total = G.drivers.length;
-  let revealMin;
-  if      (total <= 16) revealMin = 3;
-  else if (total <= 19) revealMin = 5;
-  else if (total <= 20) revealMin = 7;
-  else                  revealMin = 8;
-
-  const hideMin   = 10;
-  const hideMax   = Math.min(13, total - revealMin);
-  const hideCount = hideMin + Math.floor(Math.random() * (hideMax - hideMin + 1));
+  const diffHideCount = { easy: 10, medium: 8, hard: 6 };
+  const hideCount = Math.min(diffHideCount[G.race.difficulty] || 8, total - 1);
 
   const allPos   = Array.from({ length: total }, (_, i) => i + 1);
   const shuffled = [...allPos].sort(() => Math.random() - .5);
@@ -136,6 +126,7 @@ function _launchGame() {
   G.dragging  = null;
   G.hintsUsed = 0;
   G.hintedPos = new Set();
+  G.hintMode  = false;
   G.lives     = G.MAX_LIVES;
   G.teamColors = resolveTeamColors(G.drivers);
   G.hidden.forEach(p => { if (p <= G.drivers.length) G.state[p] = 'empty'; });
@@ -283,14 +274,16 @@ function buildGridList() {
 /* Single delegated click listener — set once, never lost on innerHTML rebuild */
 function initGridClickDelegate() {
   const list = document.getElementById('grid-list');
-  if (list._delegateAttached) return; // only attach once per game session
+  if (list._delegateAttached) return;
   list._delegateAttached = true;
   list.addEventListener('click', (e) => {
-    if (e.target.closest('.rm-btn')) return; // rm-btn has its own onclick
+    if (e.target.closest('.rm-btn')) return;
     const entry = e.target.closest('.grid-entry');
     if (!entry) return;
     const pos = Number(entry.dataset.pos);
     if (!pos) return;
+    // Dacă suntem în hint mode, aplică hint la poziția apăsată
+    if (G.hintMode) { applyHintToPos(pos); return; }
     onEntryClick(pos);
   });
 }
@@ -472,12 +465,35 @@ function freeChip(pos) {
 
 /* ══ HINT SYSTEM ══ */
 function useHint() {
+  if (G.hintsUsed >= G.MAX_HINTS) { toast('Ai folosit deja hint-ul!', 'bad'); return; }
   const valid      = [...G.hidden].filter(p => p <= G.drivers.length);
-  const candidates = valid.filter(p => G.state[p] !== 'correct' && !G.hintedPos.has(p));
-  if (candidates.length === 0) { toast('No more positions to guess!', 'bad'); return; }
-  if (G.hintsUsed >= G.MAX_HINTS) { toast('You used all hints!', 'bad'); return; }
+  const candidates = valid.filter(p => G.state[p] !== 'correct');
+  if (candidates.length === 0) { toast('Nu mai sunt poziții de ghicit!', 'bad'); return; }
 
-  const pos = candidates.sort((a,b) => a-b)[0];
+  // Activează modul de selecție hint
+  G.hintMode = true;
+  document.getElementById('btn-hint').classList.add('hint-selecting');
+  toast('💡 Apasă pe poziția unde vrei hint!', 'hint');
+
+  // Evidențiază drop-zone-urile disponibile
+  candidates.forEach(pos => {
+    const entry = document.getElementById(`entry-${pos}`);
+    if (entry) entry.classList.add('hint-target');
+  });
+}
+
+function applyHintToPos(pos) {
+  if (!G.hintMode) return;
+  if (G.state[pos] === 'correct') return;
+  const valid = [...G.hidden].filter(p => p <= G.drivers.length);
+  if (!valid.includes(pos)) return;
+
+  // Dezactivează modul hint
+  G.hintMode = false;
+  document.getElementById('btn-hint').classList.remove('hint-selecting');
+  document.querySelectorAll('.hint-target').forEach(el => el.classList.remove('hint-target'));
+
+  // Eliberează chip-ul dacă era plasat
   if (G.state[pos] === 'filled') { freeChip(G.answers[pos]); delete G.answers[pos]; }
 
   G.answers[pos]   = pos;
@@ -494,16 +510,24 @@ function useHint() {
   }
   updateHintCounter();
   updateProg();
-  toast(`💡 Hint: P${pos} → ${G.drivers[pos-1].abbr}`, 'hint');
+  toast(`💡 Hint: P${pos} → ${G.drivers[pos - 1].abbr}`, 'hint');
   const stillOpen = valid.filter(p => G.state[p] !== 'correct').length;
   if (stillOpen === 0) setTimeout(() => checkAnswers(), 200);
+}
+
+function cancelHintMode() {
+  if (!G.hintMode) return;
+  G.hintMode = false;
+  document.getElementById('btn-hint').classList.remove('hint-selecting');
+  document.querySelectorAll('.hint-target').forEach(el => el.classList.remove('hint-target'));
+  toast('Hint anulat.', '');
 }
 
 function updateHintCounter() {
   const el = document.getElementById('hint-counter');
   if (el) {
     const left = G.MAX_HINTS - G.hintsUsed;
-    el.textContent = `${left} left`;
+    el.textContent = left > 0 ? `${left} left` : 'used';
   }
   const btn = document.getElementById('btn-hint');
   if (btn) btn.disabled = (G.hintsUsed >= G.MAX_HINTS);
@@ -581,7 +605,11 @@ function resetGame() {
   G.dragging  = null;
   G.hintsUsed = 0;
   G.hintedPos = new Set();
+  G.hintMode  = false;
   G.lives     = G.MAX_LIVES;
+  document.querySelectorAll('.hint-target').forEach(el => el.classList.remove('hint-target'));
+  const hintBtn = document.getElementById('btn-hint');
+  if (hintBtn) hintBtn.classList.remove('hint-selecting');
   G.hidden.forEach(p => { if (p <= G.drivers.length) G.state[p] = 'empty'; });
   buildPool();
   buildGridList();
