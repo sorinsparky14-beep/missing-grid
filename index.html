@@ -157,7 +157,7 @@
       <span class="life" id="life-2">❤️</span>
       <span class="life" id="life-3">❤️</span>
     </div>
-    <button class="btn btn-hint" id="btn-hint" onclick="useHint()">💡 Hint <span id="hint-counter">3 left</span></button>
+    <button class="btn btn-hint" id="btn-hint" onclick="G.hintMode ? cancelHintMode() : useHint()">💡 Hint <span id="hint-counter">1 left</span></button>
     <button class="btn btn-green" onclick="checkAnswers()">✓ Check</button>
   </div>
 </div>
