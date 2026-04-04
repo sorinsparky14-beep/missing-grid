@@ -152,6 +152,7 @@ function _launchGame() {
   updateProg();
   buildPool();
   buildGridList();
+  initGridClickDelegate();
 
   // Show game, hide others
   document.getElementById('landing-page').style.display  = 'none';
@@ -264,6 +265,21 @@ function buildGridList() {
   }
 }
 
+/* Single delegated click listener — set once, never lost on innerHTML rebuild */
+function initGridClickDelegate() {
+  const list = document.getElementById('grid-list');
+  if (list._delegateAttached) return; // only attach once per game session
+  list._delegateAttached = true;
+  list.addEventListener('click', (e) => {
+    if (e.target.closest('.rm-btn')) return; // rm-btn has its own onclick
+    const entry = e.target.closest('.grid-entry');
+    if (!entry) return;
+    const pos = Number(entry.dataset.pos);
+    if (!pos) return;
+    onEntryClick(pos);
+  });
+}
+
 function makeEntry(pos) {
   const d        = G.drivers[pos - 1];
   const isHidden = G.hidden.has(pos);
@@ -278,7 +294,6 @@ function makeEntry(pos) {
     entry.className = 'grid-entry drop-zone';
     entry.innerHTML = dropZoneHTML(pos);
     attachDropEvents(entry, pos);
-    entry.addEventListener('click', () => onEntryClick(pos));
   }
   return entry;
 }
@@ -398,7 +413,6 @@ function placeDriver(fromPos, targetPos) {
       oldEntry.className = 'grid-entry drop-zone';
       oldEntry.innerHTML = dropZoneHTML(prevSlot);
       attachDropEvents(oldEntry, prevSlot);
-      oldEntry.addEventListener('click', () => onEntryClick(prevSlot));
     }
   }
 
@@ -416,7 +430,6 @@ function placeDriver(fromPos, targetPos) {
     entry.className = 'grid-entry filled';
     entry.innerHTML = filledHTML(d, targetPos);
     attachDropEvents(entry, targetPos);
-    entry.addEventListener('click', () => onEntryClick(targetPos));
   }
   updateProg();
 }
@@ -433,7 +446,6 @@ function removeFromEntry(pos, e) {
     entry.className = 'grid-entry drop-zone';
     entry.innerHTML = dropZoneHTML(pos);
     attachDropEvents(entry, pos);
-    entry.addEventListener('click', () => onEntryClick(pos));
   }
   updateProg();
 }
@@ -558,6 +570,9 @@ function resetGame() {
   G.hidden.forEach(p => { if (p <= G.drivers.length) G.state[p] = 'empty'; });
   buildPool();
   buildGridList();
+  const list = document.getElementById('grid-list');
+  if (list) list._delegateAttached = false;
+  initGridClickDelegate();
   updateLives();
   updateHintCounter();
   updateProg();
