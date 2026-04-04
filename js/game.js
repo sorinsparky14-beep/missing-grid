@@ -495,8 +495,20 @@ function applyHintToPos(pos) {
   document.getElementById('btn-hint').classList.remove('hint-selecting');
   document.querySelectorAll('.hint-target').forEach(el => el.classList.remove('hint-target'));
 
-  // Eliberează chip-ul dacă era plasat
-  if (G.state[pos] === 'filled') { freeChip(G.answers[pos]); delete G.answers[pos]; }
+  // Eliberează chip-ul dacă era plasat pe această poziție
+  if (G.state[pos] === 'filled') {
+    const evictedChipPos = G.answers[pos];
+    // Șterge orice altă referință la acest chip în answers
+    Object.keys(G.answers).forEach(k => {
+      if (G.answers[k] === evictedChipPos) delete G.answers[k];
+    });
+    // Resetează vizual chipul în pool
+    const evictedChip = document.getElementById(`chip-${evictedChipPos}`);
+    if (evictedChip) {
+      evictedChip.classList.remove('placed', 'sel-chip');
+      evictedChip.style.opacity = '';
+    }
+  }
 
   G.answers[pos]   = pos;
   G.state[pos]     = 'correct';
