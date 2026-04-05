@@ -393,7 +393,7 @@ select.race-select option { background:var(--jet); }
 /* ══════════════════════════════════════════
    LANDING PAGE
 ══════════════════════════════════════════ */
-#landing-page { max-width: 980px; margin: 0 auto; padding: 60px 24px 80px; text-align: center; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
+#landing-page { display: none; max-width: 980px; margin: 0 auto; padding: 60px 24px 80px; text-align: center; min-height: 100vh; flex-direction: column; justify-content: center; align-items: center; width: 100%; }
 .landing-hero { margin-bottom: 40px; }
 .htp-section { margin-top: 40px; margin-bottom: 32px; animation: fadeIn .25s ease; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
