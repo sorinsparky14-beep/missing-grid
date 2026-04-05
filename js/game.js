@@ -30,7 +30,8 @@ const G = {
 
 /* ══ PAGE NAVIGATION ══ */
 
-function showLanding() {
+function showLanding(pushUrl = true) {
+  if (pushUrl) history.pushState({page:'landing'}, '', '/');
   stopTimer();
   document.querySelector('header').classList.remove('visible');
   document.getElementById('landing-page').style.display  = 'flex';
@@ -42,7 +43,8 @@ function showLanding() {
   document.getElementById('hdr-logo').style.display      = 'none';
 }
 
-function showCustomEditor() {
+function showCustomEditor(pushUrl = true) {
+  if (pushUrl) history.pushState({page:'custom'}, '', '/custom');
   G.mode = 'custom';
   document.querySelector('header').classList.remove('visible');
   document.getElementById('landing-page').style.display  = 'none';
@@ -82,6 +84,7 @@ function toggleHowToPlay() {
 
 function startRandomGame(forceDifficulty) {
   G.mode = 'random';
+  history.pushState({page:'play-random'}, '', '/play-random-race');
 
   // Filter by difficulty if requested, otherwise pick from all
   const pool = forceDifficulty
@@ -96,11 +99,12 @@ function startRandomGame(forceDifficulty) {
   G.race.difficulty = race.difficulty || 'medium';
   G.drivers         = race.drivers.map(d => ({ ...d }));
 
-  // Hidden: bazat pe dificultate
-  // easy=10, medium=8, hard=6 (fixe, nu random)
+  // Hidden: bazat pe dificultate (random în interval)
+  // easy: 6-10, medium: 6-8, hard: 6
   const total = G.drivers.length;
-  const diffHideCount = { easy: 10, medium: 8, hard: 6 };
-  const hideCount = Math.min(diffHideCount[G.race.difficulty] || 8, total - 1);
+  const diffRanges = { easy: [6, 10], medium: [6, 8], hard: [6, 6] };
+  const [hideMin, hideMax] = diffRanges[G.race.difficulty] || [6, 8];
+  const hideCount = Math.min(hideMin + Math.floor(Math.random() * (hideMax - hideMin + 1)), total - 1);
 
   const allPos   = Array.from({ length: total }, (_, i) => i + 1);
   const shuffled = [...allPos].sort(() => Math.random() - .5);
@@ -731,3 +735,28 @@ function toast(msg, type = '') {
   clearTimeout(t._t);
   t._t = setTimeout(() => { t.className = ''; }, 2400);
 }
+
+/* ══ URL ROUTING ══ */
+
+// Citește ruta la încărcare și navighează corespunzător
+window.addEventListener('DOMContentLoaded', () => {
+  const path = window.location.pathname;
+  if (path === '/play-random-race') {
+    startRandomGame();
+  } else if (path === '/custom') {
+    showCustomEditor(false);
+  } else {
+    // landing — setăm state-ul inițial fără pushState
+    history.replaceState({page:'landing'}, '', '/');
+    showLanding(false);
+  }
+});
+
+// Butonul Back/Forward al browserului
+window.addEventListener('popstate', (e) => {
+  const state = e.state;
+  if (!state) { showLanding(false); return; }
+  if (state.page === 'landing')      showLanding(false);
+  else if (state.page === 'custom')  showCustomEditor(false);
+  else if (state.page === 'play-random') startRandomGame();
+});
