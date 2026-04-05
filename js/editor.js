@@ -26,19 +26,15 @@ document.querySelectorAll('.etab').forEach(tab => {
 /* ══ RACE SELECTOR ══ */
 function buildRaceSelector() {
   const sel = document.getElementById('race-select');
-  if (!sel) return;
-  // Rebuild always to ensure options are populated
+  if (!sel || sel.options.length > 1) return;
   sel.innerHTML = '<option value="">— Choose a race —</option>';
-  if (typeof RACES === 'undefined' || !RACES.length) return;
   RACES.forEach(r => {
     const opt = document.createElement('option');
     opt.value = r.id;
     opt.textContent = `${r.flag}  ${r.name} (${r.year})`;
     sel.appendChild(opt);
   });
-  // Remove any existing listener before adding a new one
-  if (sel._changeHandler) sel.removeEventListener('change', sel._changeHandler);
-  sel._changeHandler = () => {
+  sel.addEventListener('change', () => {
     if (!sel.value) {
       document.getElementById('in-name').value = '';
       document.getElementById('in-year').value = '';
@@ -49,8 +45,7 @@ function buildRaceSelector() {
     }
     const race = RACES.find(r => r.id === sel.value);
     if (race) loadRace(race);
-  };
-  sel.addEventListener('change', sel._changeHandler);
+  });
 }
 
 /* ══ LOAD RACE ══ */
