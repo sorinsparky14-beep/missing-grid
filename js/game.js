@@ -84,9 +84,9 @@ function toggleHowToPlay() {
 
 /* ══ RANDOM GAME ══ */
 
-function startRandomGame(forceDifficulty) {
+function startRandomGame(forceDifficulty, pushUrl = true) {
   G.mode = 'random';
-  history.pushState({page:'play-random'}, '', '/play-random-race');
+  if (pushUrl) history.pushState({page:'play-random'}, '', '/play-random-race');
 
   // Filter by difficulty if requested, otherwise pick from all
   const pool = forceDifficulty
@@ -98,14 +98,14 @@ function startRandomGame(forceDifficulty) {
   G.race.name       = race.name;
   G.race.year       = race.year;
   G.race.flag       = race.flag;
-  G.race.difficulty = race.difficulty || 'medium';
+  G.race.difficulty = race.difficulty || null;
   G.drivers         = race.drivers.map(d => ({ ...d }));
 
   // Hidden: bazat pe dificultate (random în interval)
   // easy: 6-10, medium: 6-8, hard: 6
   const total = G.drivers.length;
   const diffRanges = { easy: [6, 10], medium: [6, 8], hard: [6, 6] };
-  const [hideMin, hideMax] = diffRanges[G.race.difficulty] || [6, 8];
+  const [hideMin, hideMax] = diffRanges[G.race.difficulty] || [6, 10];
   const hideCount = Math.min(hideMin + Math.floor(Math.random() * (hideMax - hideMin + 1)), total - 1);
 
   const allPos   = Array.from({ length: total }, (_, i) => i + 1);
@@ -385,6 +385,7 @@ function attachDropEvents(el, pos) {
 
 /* ══ INTERACTION ══ */
 function selectChip(pos) {
+  if (G.hintMode) { cancelHintMode(); return; } // anulează hint mode la click pe chip
   if (G.state[pos] === 'correct') return;
   G.selChip = pos;
   document.querySelectorAll('.dchip').forEach(c => c.classList.remove('sel-chip'));
@@ -493,8 +494,11 @@ function useHint() {
 
 function applyHintToPos(pos) {
   if (!G.hintMode) return;
-  if (!G.hidden.has(pos)) return;               // nu e poziție ascunsă
+  if (!G.hidden.has(pos)) return;
   if (G.state[pos] === 'correct') return;
+  if (G.state[pos] === 'wrong')   return; // animație shake în curs
+
+  const valid = [...G.hidden].filter(p => p <= G.drivers.length); // definit local
 
   // Dezactivează modul hint
   G.hintMode = false;
@@ -563,6 +567,7 @@ function updateLives() {
 
 /* ══ CHECK ANSWERS ══ */
 function checkAnswers() {
+  if (G.hintMode) cancelHintMode(); // anulează hint mode dacă era activ
   const valid    = [...G.hidden].filter(p => p <= G.drivers.length);
   const unfilled = valid.filter(p => G.state[p] !== 'correct' && G.state[p] !== 'filled');
   if (unfilled.length > 0) { toast(`${unfilled.length} position${unfilled.length !== 1 ? 's' : ''} still empty!`, 'bad'); return; }
@@ -644,6 +649,8 @@ function resetGame() {
 
 /* ══ RESULT ══ */
 function showResult(correct, total) {
+  // Asigură că hint mode e dezactivat
+  if (G.hintMode) cancelHintMode();
   const pct = Math.round(correct / total * 100);
   let emoji = '😅', title = 'Try Again!';
   if      (pct === 100) { emoji = '🏆'; title = 'PERFECT!';    }
@@ -713,14 +720,8 @@ function launchConfetti() {
 }
 
 /* ══ TIMER (disabled) ══ */
-const MAX_TIMER_SEC = 0;
 function startTimer() {}
 function stopTimer()  { clearInterval(G.timerRef); G.timerRunning = false; }
-function renderTimer() {}
-function formatTime(sec) {
-  const m = Math.floor(sec / 60), s = sec % 60;
-  return `${m}:${String(s).padStart(2,'0')}`;
-}
 
 /* ══ UTILITIES ══ */
 function hexToRgb(hex) {
@@ -758,7 +759,7 @@ window.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('popstate', (e) => {
   const state = e.state;
   if (!state) { showLanding(false); return; }
-  if (state.page === 'landing')      showLanding(false);
-  else if (state.page === 'custom')  showCustomEditor(false);
-  else if (state.page === 'play-random') startRandomGame();
+  if (state.page === 'landing')        showLanding(false);
+  else if (state.page === 'custom')    showCustomEditor(false);
+  else if (state.page === 'play-random') startRandomGame(undefined, false);
 });
