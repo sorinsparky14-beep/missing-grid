@@ -263,7 +263,7 @@ function buildPool() {
       chip.innerHTML   = `
         <div class="chip-body" style="background:${col}; border-left: 4px solid rgba(0,0,0,0.3);">
           <div class="chip-abbr" style="color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.7);">${d.abbr}</div>
-          <div class="chip-name" style="color:rgba(255,255,255,0.85);">${d.name}</div>
+          <div class="chip-name" style="color:rgba(255,255,255,0.85);">${getFullName(d)}</div>
         </div>
       `;
       chip.addEventListener('dragstart', () => {
@@ -327,7 +327,8 @@ function makeEntry(pos) {
 
 /* Full name: uses fullName field if set, otherwise abbr + surname */
 function getFullName(d) {
-  return d.fullName || d.name;
+  if (d.fullName && d.fullName.trim()) return d.fullName.trim();
+  return d.name || d.abbr;
 }
 
 function revealedHTML(d, pos) {
