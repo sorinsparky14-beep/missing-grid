@@ -903,7 +903,7 @@ const RACES = [
       { abbr:'ROS', name:'Rosberg', fullName:'Nico Rosberg',        team:'Mercedes',         color:'#27F4D2' },
       { abbr:'DLR', name:'de la Rosa', fullName:'Pedro de la Rosa',     team:'Sauber Ferrari',   color:'#888888' },
       { abbr:'LIU', name:'Liuzzi', fullName:'Vitantonio Liuzzi',         team:'HRT Cosworth',     color:'#888888' },
-      { abbr:'DAM', fullName:"Jérôme d'Ambrosio", name:"d'Ambrosio",     team:'Virgin Cosworth',  color:'#888888' },
+      { abbr:'DAM', fullName:'Jérôme d'Ambrosio', name:"d'Ambrosio",     team:'Virgin Cosworth',  color:'#888888' },
       { abbr:'GLO', name:'Glock', fullName:'Timo Glock',          team:'Virgin Cosworth',  color:'#888888' },
       { abbr:'TRU', name:'Trulli', fullName:'Jarno Trulli',         team:'Lotus Renault',    color:'#000000' },
       { abbr:'KAR', name:'Karthikeyan', fullName:'Narain Karthikeyan',    team:'HRT Cosworth',     color:'#888888' },
