@@ -41,6 +41,7 @@ body {
   font-family: 'Teko', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
+  overflow-y: auto;
   background-image:
     radial-gradient(ellipse 80% 45% at 50% 100%, rgba(155,0,30,0.45) 0%, transparent 70%),
     radial-gradient(ellipse 55% 30% at 50% 110%, rgba(42,0,8,0.6) 0%, transparent 60%);
