@@ -68,14 +68,18 @@ function renderDriversTable(preset = []) {
   }
 }
 
+function escapeAttr(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 function buildDriverRow(pos, d = {}) {
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td class="pt">P${pos}</td>
-    <td><input type="text"  class="d-abbr" value="${d.abbr  || ''}" placeholder="" style="width:54px;text-transform:uppercase" maxlength="3"></td>
-    <td><input type="text"  class="d-name" value="${d.name  || ''}" placeholder="" style="width:148px"></td>
-    <td><input type="text"  class="d-team" value="${d.team  || ''}" placeholder="" style="width:118px"></td>
-    <td><input type="color" class="cc d-color" value="${d.color || '#888888'}"></td>
+    <td><input type="text"  class="d-abbr" value="${escapeAttr(d.abbr)}" placeholder="" style="width:54px;text-transform:uppercase" maxlength="3"></td>
+    <td><input type="text"  class="d-name" value="${escapeAttr(d.name)}" placeholder="" style="width:148px"></td>
+    <td><input type="text"  class="d-team" value="${escapeAttr(d.team)}" placeholder="" style="width:118px"></td>
+    <td><input type="color" class="cc d-color" value="${escapeAttr(d.color || '#888888')}"></td>
     <td><label class="dnfl"><input type="checkbox" class="d-dnf" ${d.isDNF ? 'checked' : ''}>DNF</label></td>
     <td><button class="btn-rm-row" onclick="removeRow(this)" title="Șterge">−</button></td>
   `;
