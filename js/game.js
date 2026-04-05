@@ -53,7 +53,9 @@ function showCustomEditor(pushUrl = true) {
   document.getElementById('editor-panel').style.display  = 'flex';
   document.getElementById('game-area').style.display     = 'none';
   document.getElementById('result-overlay').classList.remove('show');
-  buildRaceSelector();
+  if (!document.getElementById('race-select').options.length) {
+    buildRaceSelector();
+  }
   // Resetează întotdeauna la deschidere
   document.getElementById('race-select').value = '';
   document.getElementById('in-name').value = '';
@@ -86,23 +88,10 @@ function startRandomGame(forceDifficulty, pushUrl = true) {
   G.mode = 'random';
   if (pushUrl) history.pushState({page:'play-random'}, '', '/play-random-race');
 
-  if (typeof RACES === 'undefined' || !RACES.length) {
-    toast('Race data not loaded. Please refresh.', 'bad');
-    showLanding(false);
-    return;
-  }
-
   // Filter by difficulty if requested, otherwise pick from all
   const pool = forceDifficulty
     ? RACES.filter(r => r.difficulty === forceDifficulty)
     : RACES;
-
-  if (!pool.length) {
-    toast('No races available for this difficulty.', 'bad');
-    showLanding(false);
-    return;
-  }
-
   const race = pool[Math.floor(Math.random() * pool.length)];
 
   // Set race info
@@ -755,17 +744,12 @@ function toast(msg, type = '') {
 // Citește ruta la încărcare și navighează corespunzător
 window.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
-  try {
-    if (path === '/play-random-race') {
-      startRandomGame(undefined, false);
-    } else if (path === '/custom') {
-      showCustomEditor(false);
-    } else {
-      history.replaceState({page:'landing'}, '', '/');
-      showLanding(false);
-    }
-  } catch (err) {
-    console.error('Init error:', err);
+  if (path === '/play-random-race') {
+    startRandomGame();
+  } else if (path === '/custom') {
+    showCustomEditor(false);
+  } else {
+    // landing — setăm state-ul inițial fără pushState
     history.replaceState({page:'landing'}, '', '/');
     showLanding(false);
   }
