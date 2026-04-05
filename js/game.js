@@ -33,6 +33,7 @@ const G = {
 function showLanding(pushUrl = true) {
   if (pushUrl) history.pushState({page:'landing'}, '', '/');
   stopTimer();
+  document.body.style.overflow = '';
   document.querySelector('header').classList.remove('visible');
   document.getElementById('landing-page').style.display  = 'flex';
   document.getElementById('editor-panel').style.display  = 'none';
@@ -46,6 +47,7 @@ function showLanding(pushUrl = true) {
 function showCustomEditor(pushUrl = true) {
   if (pushUrl) history.pushState({page:'custom'}, '', '/custom');
   G.mode = 'custom';
+  document.body.style.overflow = 'hidden';
   document.querySelector('header').classList.remove('visible');
   document.getElementById('landing-page').style.display  = 'none';
   document.getElementById('editor-panel').style.display  = 'flex';
@@ -168,6 +170,7 @@ function _launchGame() {
   document.getElementById('landing-page').style.display  = 'none';
   document.getElementById('editor-panel').style.display  = 'none';
   document.getElementById('game-area').style.display     = 'block';
+  document.body.style.overflow = 'hidden';
 
   startTimer();
 }
