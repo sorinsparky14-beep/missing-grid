@@ -47,7 +47,8 @@ function showLanding(pushUrl = true) {
 function showCustomEditor(pushUrl = true) {
   if (pushUrl) history.pushState({page:'custom'}, '', '/custom');
   G.mode = 'custom';
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflowX = 'hidden';
+  document.body.style.overflowY = 'auto';
   document.querySelector('header').classList.remove('visible');
   document.getElementById('landing-page').style.display  = 'none';
   document.getElementById('editor-panel').style.display  = 'flex';
@@ -170,7 +171,8 @@ function _launchGame() {
   document.getElementById('landing-page').style.display  = 'none';
   document.getElementById('editor-panel').style.display  = 'none';
   document.getElementById('game-area').style.display     = 'block';
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflowX = 'hidden';
+  document.body.style.overflowY = 'auto';
 
   startTimer();
 }
