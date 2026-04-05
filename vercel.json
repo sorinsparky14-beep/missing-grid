@@ -1,6 +1,7 @@
 {
   "outputDirectory": ".",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/play-random-race", "destination": "/index.html" },
+    { "source": "/custom", "destination": "/index.html" }
   ]
 }
