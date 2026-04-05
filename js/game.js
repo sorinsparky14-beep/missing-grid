@@ -690,6 +690,19 @@ function showResult(correct, total) {
 
   document.getElementById('result-overlay').classList.add('show');
   if (pct === 100) launchConfetti();
+
+  // Race story
+  const storyEl  = document.getElementById('res-story');
+  const storyTxt = document.getElementById('res-story-text');
+  const storyTags = document.getElementById('res-story-tags');
+  const story = (typeof RACE_STORIES !== 'undefined') && RACE_STORIES[G.race.id];
+  if (story && G.mode === 'random') {
+    storyTxt.textContent = story.text;
+    storyTags.innerHTML = story.tags.map(t => `<span class="story-tag">${t}</span>`).join('');
+    storyEl.style.display = 'block';
+  } else {
+    storyEl.style.display = 'none';
+  }
 }
 
 /* ══ CONFETTI ══ */
