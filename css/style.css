@@ -484,3 +484,46 @@ select.race-select option { background:var(--jet); }
   from { box-shadow: 0 0 0 0 rgba(250,204,21,0.4); }
   to   { box-shadow: 0 0 0 6px rgba(250,204,21,0); }
 }
+
+/* ── RACE STORY ── */
+.res-story {
+  margin: 18px 0 6px;
+  padding: 18px 20px;
+  background: rgba(8,8,16,0.7);
+  border: 1px solid rgba(58,58,82,.4);
+  border-left: 3px solid var(--red);
+  text-align: left;
+  max-width: 520px;
+  width: 100%;
+}
+.res-story-label {
+  font-family: 'Teko', sans-serif;
+  font-size: .62rem;
+  letter-spacing: .28em;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.res-story-text {
+  font-family: 'Teko', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--silver);
+  line-height: 1.5;
+  letter-spacing: .02em;
+}
+.res-story-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.story-tag {
+  font-family: 'Teko', sans-serif;
+  font-size: .65rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--goldMid);
+  border: 1px solid rgba(201,168,76,.3);
+  padding: 2px 10px;
+}
